@@ -84,3 +84,105 @@ FOLDER1
         subfolder4
             CONTAINS: OTHER
 ```
+
+# Check-In 2
+
+## Component Division and Assignment
+
+### Tokenizer/Parser: DSL Source -> AST output
+
+Tasks:
+
+- Parsing Conditionals
+- Conditionals Functions
+  - Basic syntax parsing, no checks for circular dependencies
+    - Folder structure / subfolders
+      - Tests
+
+**Assigned**: Harry, Henry
+
+### Interpreter: AST input, Folder on disk/path -> Search Tree, Folder on disk
+
+Tasks:
+
+- For-each interpreting
+- Expanding conditional functions
+  - checking for circular dependencies (stretch / static check)
+- Tests
+
+**Assigned**: Mazen, Louise
+
+### Evaluator/Searcher: Search Tree, individual file -> String summary, location in the folder structure
+
+- Tests
+
+**Assigned**: Ronald
+
+### AST Design/Search Tree Design
+
+Assigned: All
+
+### End-to-end Testing
+
+Assigned: TBD (depending on workload)
+
+### Video
+
+Assigned: TBD (depending on workload)
+
+### Project Coordination
+
+Assigned: Mazen, Louise
+
+### Check-in Writeups
+
+Assigned: All (rotation + collaboration)
+
+### Timeline
+
+Weekly Team Check-Ins: Monday, 5:00 - 6:00pm (Hybrid, Location TBD)
+
+- Monday, January 29th, 7:00pm - AST and Search Tree design (post-meeting)
+- Wednesday, January 31st  - User Study 1
+- Wednesday, February 14th   - Implementation Finished
+- Wednesday, February 21st - User Study 2
+- Saturday, February 24th - Video Finished
+
+Check-ins involve reporting on progress, raising blocking issues, and coming up for solutions to stay on track. Team will collaboratively determine the best course of action in these meetings to meet deadlines. For features involving multiple people, designs, tasks, and division of workload will be negotiated between them and reported back to the overall team. The expectation for these 'sub-teams' as they regularly communicate and are responsible for each other.
+
+### Project Notes
+
+- Input pre-conditions:
+  - Non-zip source directory (does not have to be flat)
+- Expand loops as a macro before inputting into a search tree.
+  - Do not expand conditions due to recursive properties
+
+### Minutes: TA Check-In 2
+
+- G: Is recursion supported? It feels natural for a file system (subfolder structure)
+  - Could be a loop or recursive, and recursion could be better for reducing complexity
+  - Ha: more declarative; just describing where things go rather than writing a long procedure
+- G: Can users have two inputs or inputs of different types for the conditions?
+  - Yes
+- G: Are conditions macros?
+  - Yes
+- Clarification about what the folder structure actually represents (new structure with input files within, not moving files around within existing structure). G seemed to think the user was drawing up their current directory structure rather than a new one
+
+- G: Can users define a variable outside a loop?
+  - Ha: what would the use case be?
+    - G: if we need fuller features, we might need to extend the use case
+    - M: variables can be referenced in conditions
+- G: he’ll add whatever feedback from instructors on the original proposal to an issue on GH
+
+- G: add invariants (pre- and post-conditions) to check-in 2
+  - DSL → AST
+  - AST → interpreter/evaluator
+  - What conditions do you want to check?
+  - Can add no left recursion, no ambiguity, etc.
+    - Think about constraints for file system input
+- G: timeline can just be week-by-week, e.g., implementation done by week 5, E2E testing week 6
+
+### Summary of progress
+
+- Project divided into 3 main components of Tokenizer/Parser, Interpreter, and the Evaluator/Searcher with 2:2:1 members on each component respectively based on expected difficulty. Basic tasks defined for each module as for the expectations of what each component should accomplish.
+- Group roadmap checkpoints established, main checkpoint is getting implementation finished February 14th to allow for second-round user study to be done and creating project video.
