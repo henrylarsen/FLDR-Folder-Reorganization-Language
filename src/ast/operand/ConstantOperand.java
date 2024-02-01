@@ -19,4 +19,9 @@ public class ConstantOperand implements Operand {
     public Value getValue(ProgramScope scope) {
         return constantValue;
     }
+
+    @Override
+    public String toString() {
+        return constantValue.coerceToString();
+    }
 }

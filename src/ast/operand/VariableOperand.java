@@ -21,4 +21,9 @@ public class VariableOperand implements Operand {
     public Value getValue(ProgramScope scope) {
         return scope.getDefinitionValue(variableName);
     }
+
+    @Override
+    public String toString() {
+        return "$" + variableName;
+    }
 }

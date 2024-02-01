@@ -38,4 +38,12 @@ public class ProgramScope {
     public ProgramScope copy() {
         return new ProgramScope(this);
     }
+
+    public void removeDefinition(String name) {
+        if (!currentScope.containsKey(name)) {
+            throw new IllegalArgumentException("Definition " + name + " is not defined");
+        }
+
+        currentScope.remove(name);
+    }
 }
