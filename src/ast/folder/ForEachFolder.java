@@ -20,12 +20,12 @@ public class ForEachFolder extends AbstractFolder {
     public void evaluate(ProgramScope scope) {
         System.out.println("Started evaluating FOREACH with variable: " + name);
         for (Value value : values) {
-            scope.setDefinition(name, value);
+            scope.setLocalDefinition(name, value);
             for (AbstractFolder subfolder : subfolders) {
                 subfolder.evaluate(scope);
             }
             // name has gone out of scope once the subfolders are done evaluating
-            scope.removeDefinition(name);
+            scope.removeLocalDefinition(name);
         }
         System.out.println("Finished evaluating FOREACH");
     }

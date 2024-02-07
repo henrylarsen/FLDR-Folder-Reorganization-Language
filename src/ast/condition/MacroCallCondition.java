@@ -25,7 +25,7 @@ public class MacroCallCondition extends AbstractCondition {
     public boolean evaluate(ProgramScope scope) {
         Macro macro = scope.getDefinitionValue(macroName).coerceToMacro();
         List<String> macroParameters = macro.getParameters();
-        ProgramScope newScope = scope.copy();
+        ProgramScope newScope = scope.buildNew();
 
         if (parameterValues.size() != macroParameters.size()) {
             throw new IllegalStateException("Mismatched parameters for macro " + macroName);
@@ -36,7 +36,7 @@ public class MacroCallCondition extends AbstractCondition {
             String parameterName = macroParameters.get(i);
             Value parameterValue = parameterValues.get(i).getValue(scope);
 
-            newScope.setDefinition(parameterName, parameterValue);
+            newScope.setLocalDefinition(parameterName, parameterValue);
         }
 
         return macro.evaluate(newScope);
