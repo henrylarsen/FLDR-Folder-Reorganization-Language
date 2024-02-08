@@ -3,6 +3,8 @@ package ast.condition.junction;
 import ast.condition.AbstractCondition;
 import libs.ProgramScope;
 
+import java.util.Objects;
+
 /**
  * Represents a boolean junction (AND, OR, etc.) between two child conditions, e.g.
  *
@@ -25,5 +27,13 @@ public class ConditionJunction extends AbstractCondition {
                 () -> leftCondition.evaluate(scope),
                 () -> rightCondition.evaluate(scope)
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConditionJunction that = (ConditionJunction) o;
+        return junctionType == that.junctionType && Objects.equals(leftCondition, that.leftCondition) && Objects.equals(rightCondition, that.rightCondition);
     }
 }

@@ -1,4 +1,4 @@
 parser grammar DSLParser;
 options { tokenVocab=DSLLexer; }
 
-hello: HI EOF;
+program: HI EOF;

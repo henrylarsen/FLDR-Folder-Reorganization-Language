@@ -4,6 +4,7 @@ import libs.ProgramScope;
 import libs.value.Value;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ForEachFolder extends AbstractFolder {
     private final String name;
@@ -28,5 +29,13 @@ public class ForEachFolder extends AbstractFolder {
             scope.removeLocalDefinition(name);
         }
         System.out.println("Finished evaluating FOREACH");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ForEachFolder that = (ForEachFolder) o;
+        return Objects.equals(name, that.name) && Objects.equals(values, that.values) && Objects.equals(subfolders, that.subfolders);
     }
 }

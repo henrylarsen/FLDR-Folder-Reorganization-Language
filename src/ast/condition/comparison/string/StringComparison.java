@@ -21,4 +21,13 @@ public class StringComparison extends AbstractComparison {
     protected boolean compare(Value leftValue, Value rightValue) {
         return comparisonType.compare(leftValue.coerceToString(), rightValue.coerceToString());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) return false;
+        if (this == o) return true;
+        if (getClass() != o.getClass()) return false;
+        StringComparison that = (StringComparison) o;
+        return comparisonType == that.comparisonType;
+    }
 }

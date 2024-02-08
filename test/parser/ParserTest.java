@@ -17,7 +17,7 @@ import libs.Node;
 import libs.value.IntegerValue;
 import libs.value.StringValue;
 import libs.value.Value;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class ParserTest {
     AbstractCondition isNew;
     AbstractCondition isNewAndPdf;
 
-    @Before
+    @BeforeEach
     public void initialize() {
         isPdf = new StringComparison(
                 new VariableOperand("TYPE"),
@@ -79,5 +79,4 @@ public class ParserTest {
     void helloWorld() {
         System.out.println("Hello world!");
     }
-
 }

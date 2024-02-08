@@ -1,15 +1,17 @@
 package ast;
 
 import ast.condition.AbstractCondition;
+import libs.Node;
 import libs.ProgramScope;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representation of a function with a set of parameters, returning a boolean value
  * when evaluated in scope
  */
-public class Macro extends Definition {
+public class Macro extends Node {
     private final List<String> parameters;
     private final AbstractCondition childCondition;
 
@@ -33,4 +35,13 @@ public class Macro extends Definition {
 
         return childCondition.evaluate(scope);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Macro macro = (Macro) o;
+        return Objects.equals(parameters, macro.parameters) && Objects.equals(childCondition, macro.childCondition);
+    }
+
 }

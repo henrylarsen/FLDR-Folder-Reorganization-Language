@@ -3,6 +3,8 @@ package ast.operand;
 import libs.ProgramScope;
 import libs.value.Value;
 
+import java.util.Objects;
+
 /**
  * An operand that has a constant value, regardless of the scope
  *
@@ -23,5 +25,13 @@ public class ConstantOperand implements Operand {
     @Override
     public String toString() {
         return constantValue.coerceToString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConstantOperand that = (ConstantOperand) o;
+        return Objects.equals(constantValue, that.constantValue);
     }
 }
