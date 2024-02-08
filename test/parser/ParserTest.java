@@ -1,74 +1,77 @@
 package parser;
 
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.Pair;
-import org.antlr.v4.runtime.tree.ParseTree;
+import ast.Program;
+import ast.condition.AbstractCondition;
+import ast.condition.comparison.numeric.NumericComparison;
+import ast.condition.comparison.numeric.NumericComparisonType;
+import ast.condition.comparison.string.StringComparison;
+import ast.condition.comparison.string.StringComparisonType;
+import ast.condition.junction.ConditionJunction;
+import ast.condition.junction.ConditionJunctionType;
+import ast.folder.ForEachFolder;
+import ast.folder.SingleFolder;
+import ast.operand.ConstantOperand;
+import ast.operand.TemplateOperand;
+import ast.operand.VariableOperand;
+import libs.Node;
+import libs.value.IntegerValue;
+import libs.value.StringValue;
+import libs.value.Value;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Stack;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ParserTest {
+    Node newpdfsProgram;
+    Node forEachProgram;
+    AbstractCondition isPdf;
+    AbstractCondition isNew;
+    AbstractCondition isNewAndPdf;
 
-    DSLParser.ProgramContext parseExample() {
-        String slideInput = """
-                RESTRUCTURE path
-                
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png"
-                
-                FOLDER "folder1"
-                    CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
-                    HAS SUBFOLDERS
-                        FOLDER "folder_1"
-                            CONTAINS: {NAME} INCLUDES "cat"
-                        FOREACH file_type in ["pdf", "png", "jpg"]
-                            FOLDER "folder_{file_type}5"
-                                CONTAINS: new_condition(2, {file_type})
-                                
-                FOLDER "folder2"
-                """;
-        DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
-        lexer.reset();
-        TokenStream tokens = new CommonTokenStream(lexer);
-        DSLParser parser = new DSLParser(tokens);
-        return parser.program();
+    @BeforeEach
+    public void initialize() {
+        isPdf = new StringComparison(
+                new VariableOperand("TYPE"),
+                new ConstantOperand(new StringValue("pdf")),
+                StringComparisonType.IS_IGNORE_CASE
+        );
+
+        isNew = new NumericComparison(
+                new VariableOperand("DATE"),
+                new ConstantOperand(new IntegerValue(20240101)),
+                NumericComparisonType.GREATER_THAN
+        );
+
+        isNewAndPdf = new ConditionJunction(ConditionJunctionType.AND, isPdf, isNew);
+
+        newpdfsProgram = new Program(
+                Collections.emptyList(),
+                Collections.singletonList(new SingleFolder(
+                        new ConstantOperand(new StringValue("pdfs folder")),
+                        isNewAndPdf,
+                        Collections.emptyList()
+                ))
+        );
+
+        Value[] categories = {new StringValue("school"), new StringValue("work"), new StringValue("home")};
+        forEachProgram = new Program(
+                new ArrayList<>(),
+                Collections.singletonList(new ForEachFolder(
+                        "cat",
+                        Arrays.asList(categories),
+                        Collections.singletonList(new SingleFolder(
+                                new TemplateOperand(new VariableOperand("cat"), "$-folder"),
+                                new StringComparison(
+                                        new VariableOperand("NAME"),
+                                        new VariableOperand("cat"),
+                                        StringComparisonType.CONTAINS
+                                ),
+                                Collections.emptyList()
+                        ))
+                ))
+        );
     }
-
-
-    @Test
-    void lectureExampleTest() {
-        DSLParser.ProgramContext p = parseExample();
-
-        Stack<Pair<ParseTree, Integer>> stack = new Stack<Pair<org.antlr.v4.runtime.tree.ParseTree, Integer>>();
-        for (int i = 0; i < p.children.size(); i++) {
-            ParseTree child = p.children.get(p.children.size() - i - 1);
-            Pair<ParseTree, Integer> tuple = new Pair<>(child, 1);
-            stack.push(tuple);
-        }
-
-        while(!stack.isEmpty()) {
-            Pair<ParseTree, Integer> tuple = stack.pop();
-            ParseTree node = tuple.a;
-            Integer depth = tuple.b;
-            for (int i = 0; i < node.getChildCount(); i++) {
-                ParseTree child = node.getChild(node.getChildCount() - i - 1);
-                Pair<ParseTree, Integer> input = new Pair<>(child, depth + 1);
-                stack.push(input);
-            }
-
-            String className = node.getClass().getName();
-            String simplifiedClassName;
-            if (className.startsWith("parser.DSLParser")) {
-                simplifiedClassName = className.substring(17, className.length() - 7);
-            } else if (className.startsWith("org.antlr.v4.runtime.tree.TerminalNodeImpl")) {
-                simplifiedClassName = node.getText().trim();
-            } else {
-                simplifiedClassName = className;
-            }
-            System.out.println("\t".repeat(depth) + simplifiedClassName + ": " + node.getText().trim());
-        }
-    }
-
 }

@@ -18,7 +18,6 @@ for_loop: FOR_EACH TEXT IN list folder;
 list: ITER_START list_contents ITER_END;
 list_contents: string (PARAM_SPLIT string)*;
 
-// TODO: function and condition_decl almost the same
 condition_body: boolean (junction condition_body)*;
 
 junction: AND | OR;
