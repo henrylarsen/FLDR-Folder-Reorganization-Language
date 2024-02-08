@@ -74,7 +74,6 @@ public class ParserTest {
                 ))
         );
     }
->>>>>>> b2fdd530433f3133c496abddc36fe7e81ffc4226
 
     @BeforeEach
     public void initialize() {
