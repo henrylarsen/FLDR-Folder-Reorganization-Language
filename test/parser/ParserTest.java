@@ -74,4 +74,49 @@ public class ParserTest {
                 ))
         );
     }
+>>>>>>> b2fdd530433f3133c496abddc36fe7e81ffc4226
+
+    @BeforeEach
+    public void initialize() {
+        isPdf = new StringComparison(
+                new VariableOperand("TYPE"),
+                new ConstantOperand(new StringValue("pdf")),
+                StringComparisonType.IS_IGNORE_CASE
+        );
+
+        isNew = new NumericComparison(
+                new VariableOperand("DATE"),
+                new ConstantOperand(new IntegerValue(20240101)),
+                NumericComparisonType.GREATER_THAN
+        );
+
+        isNewAndPdf = new ConditionJunction(ConditionJunctionType.AND, isPdf, isNew);
+
+        newpdfsProgram = new Program(
+                Collections.emptyList(),
+                Collections.singletonList(new SingleFolder(
+                        new ConstantOperand(new StringValue("pdfs folder")),
+                        isNewAndPdf,
+                        Collections.emptyList()
+                ))
+        );
+
+        Value[] categories = {new StringValue("school"), new StringValue("work"), new StringValue("home")};
+        forEachProgram = new Program(
+                new ArrayList<>(),
+                Collections.singletonList(new ForEachFolder(
+                        "cat",
+                        Arrays.asList(categories),
+                        Collections.singletonList(new SingleFolder(
+                                new TemplateOperand(new VariableOperand("cat"), "$-folder"),
+                                new StringComparison(
+                                        new VariableOperand("NAME"),
+                                        new VariableOperand("cat"),
+                                        StringComparisonType.CONTAINS
+                                ),
+                                Collections.emptyList()
+                        ))
+                ))
+        );
+    }
 }
