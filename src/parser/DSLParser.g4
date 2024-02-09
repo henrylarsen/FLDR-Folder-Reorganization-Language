@@ -9,7 +9,7 @@ condition_decl: TEXT CONDITION_PAR_START condition_params CONDITION_PAR_END;
 condition_params: TEXT (PARAM_SPLIT TEXT)*;
 
 folders: (folder | for_loop) (folders)*;
-folder: FOLDER_START string (contains)? (subfolders | folder)?;
+folder: FOLDER_START string (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
 subfolders: HAS_SUBFOLDERS folders;
@@ -36,6 +36,6 @@ operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS;
 
 string: STRING_START string_body STRING_END;
 string_body: (STRING_TEXT | string_var) (string_body)*;
-var: BUILT_IN_START BUILT_IN_TEXT BUILT_IN_END;
+var: VAR_START VAR_TEXT VAR_END;
 
-string_var: STRING_BUILT_IN_START STRING_TEXT STRING_BUILT_IN_END;
+string_var: STRING_VAR_START STRING_TEXT STRING_VAR_END;

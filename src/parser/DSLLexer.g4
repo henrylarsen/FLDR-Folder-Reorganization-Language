@@ -38,20 +38,18 @@ WS : [\r\n\t ] -> channel(HIDDEN);
 
 mode INPUT_MODE;
 STRING_START: '"' -> mode(STRING_MODE);
-BUILT_IN_START: '{' WS* -> mode(BUILT_IN_MODE);
+VAR_START: '{' WS* -> mode(VAR_MODE);
 TEXT: [a-zA-Z0-9_]+ WS* -> mode(DEFAULT_MODE);
 
-mode BUILT_IN_MODE;
-BUILT_IN_TEXT: [a-zA-Z0-9_]+ WS*;
-BUILT_IN_END: '}' WS* -> mode(DEFAULT_MODE);
+mode VAR_MODE;
+VAR_TEXT: [a-zA-Z0-9_]+ WS*;
+VAR_END: '}' WS* -> mode(DEFAULT_MODE);
 
 mode STRING_MODE;
-STRING_TEXT: [a-zA-Z0-9_]+;
-STRING_BUILT_IN_START: '{';
-STRING_BUILT_IN_END: '}';
+STRING_TEXT: [a-zA-Z0-9_]+ WS*;
+STRING_VAR_START: '{';
+STRING_VAR_END: '}';
 STRING_END: '"' WS* -> mode(DEFAULT_MODE);
 
-
 mode PATH_MODE;
-// TODO: make regex for folder path
-PATH: [a-zA-Z]+ WS* -> mode(DEFAULT_MODE);
+PATH: ~[[|\]\r\n]+ WS* -> mode(DEFAULT_MODE);

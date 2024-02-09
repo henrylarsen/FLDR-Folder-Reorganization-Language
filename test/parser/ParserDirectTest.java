@@ -13,11 +13,11 @@ public class ParserDirectTest {
 
     DSLParser.ProgramContext parseExample() {
         String slideInput = """
-                RESTRUCTURE path
+                RESTRUCTURE "C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx"
                 
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png"
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {DATE_YEAR} > 2022
                 
-                FOLDER "folder1"
+                FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
                     HAS SUBFOLDERS
                         FOLDER "folder_1"
