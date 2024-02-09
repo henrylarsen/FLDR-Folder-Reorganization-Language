@@ -386,3 +386,38 @@ Our snippets can be used as end-to-end tests. We have completed lexer and AST de
 Our language is quite permissive, so we do not have many input invariants to verify. We only require that the inputs are non-archived folders that exist.
 
 We are still determining which errors should be the responsibility of the parser and which the evaluator. Our strategy is to leverage our parser as much as possible to simply evaluator implementation and catch errors early.
+
+
+# Check-in 4
+
+## Status of Implementation
+
+### Lexer/Parser
+- Almost complete - working copy missing a few minor features.
+
+### Evaluator and UI
+- Good progress has been made.
+
+### Tests
+- Token and parser tests (ANTLR only) are passing.
+- In need of evaluator and end-to-end tests.
+- Could use more robust tokenizer tests.
+
+## Final User Study
+- Test more varied behaviour, including:
+  - files that match multiple conditions (check that users can navigate our instructions about how to match).
+    - One folder/subfolder instance where the parent condition also applies to the child.
+    - Another folder/subfolder with a condition what shouldn't apply to the children.
+      - Intent: to see how users use boolean conditions
+- Change our syntax example to show expected behaviour for the above cases.
+- Test UI interaction.
+
+These were the areas from User Study 1 that participants needed clarification on.
+
+## Adjusted Timeline
+
+- Wednesday, February 14th - Implementation Finished
+- Sunday, February 18th - User Study 2
+- Saturday, February 24th - Video Finished
+
+Moving User Study 2 up a few days to leave time to fix bugs, smooth error handling, and change what is needed.
