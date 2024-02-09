@@ -6,6 +6,7 @@ import libs.ProgramScope;
 import libs.value.Value;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A call to a macro function that will evaluate to a boolean
@@ -25,7 +26,7 @@ public class MacroCallCondition extends AbstractCondition {
     public boolean evaluate(ProgramScope scope) {
         Macro macro = scope.getDefinitionValue(macroName).coerceToMacro();
         List<String> macroParameters = macro.getParameters();
-        ProgramScope newScope = scope.copy();
+        ProgramScope newScope = scope.buildNew();
 
         if (parameterValues.size() != macroParameters.size()) {
             throw new IllegalStateException("Mismatched parameters for macro " + macroName);
@@ -36,9 +37,17 @@ public class MacroCallCondition extends AbstractCondition {
             String parameterName = macroParameters.get(i);
             Value parameterValue = parameterValues.get(i).getValue(scope);
 
-            newScope.setDefinition(parameterName, parameterValue);
+            newScope.setLocalDefinition(parameterName, parameterValue);
         }
 
         return macro.evaluate(newScope);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MacroCallCondition that = (MacroCallCondition) o;
+        return Objects.equals(macroName, that.macroName) && Objects.equals(parameterValues, that.parameterValues);
     }
 }

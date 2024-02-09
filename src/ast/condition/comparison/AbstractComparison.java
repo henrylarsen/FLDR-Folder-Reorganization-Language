@@ -5,6 +5,8 @@ import ast.operand.Operand;
 import libs.ProgramScope;
 import libs.value.Value;
 
+import java.util.Objects;
+
 /**
  * An abstraction of a comparison between two operands
  */
@@ -26,4 +28,12 @@ public abstract class AbstractComparison extends AbstractCondition {
     }
 
     protected abstract boolean compare(Value leftValue, Value rightValue);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractComparison that = (AbstractComparison) o;
+        return Objects.equals(leftOperand, that.leftOperand) && Objects.equals(rightOperand, that.rightOperand);
+    }
 }

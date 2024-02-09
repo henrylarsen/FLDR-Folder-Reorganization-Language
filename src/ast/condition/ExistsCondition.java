@@ -3,6 +3,8 @@ package ast.condition;
 import ast.operand.VariableOperand;
 import libs.ProgramScope;
 
+import java.util.Objects;
+
 /**
  * A condition that evaluates to true iff a variable exists in the scope
  *
@@ -18,5 +20,13 @@ public class ExistsCondition extends AbstractCondition {
     @Override
     public boolean evaluate(ProgramScope scope) {
         return variable.exists(scope);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExistsCondition that = (ExistsCondition) o;
+        return Objects.equals(variable, that.variable);
     }
 }

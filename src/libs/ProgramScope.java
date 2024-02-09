@@ -6,44 +6,68 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProgramScope {
-    private final Map<String, Value> currentScope = new HashMap<>();
+    /**
+     * Global scope is for definitions that span the whole program, specifically for:
+     * - Macros
+     * - File related definitions
+     */
+    private final Map<String, Value> globalScope = new HashMap<>();
+    private final Map<String, Value> localScope = new HashMap<>();
 
     public ProgramScope() {
     }
 
     ProgramScope(ProgramScope parent) {
-        this.currentScope.putAll(parent.currentScope);
+        this.globalScope.putAll(parent.globalScope);
     }
 
     public Value getDefinitionValue(String name) {
-        if (!currentScope.containsKey(name)) {
-            throw new NullPointerException("No definition exists by the name of " + name);
+        if (localScope.containsKey(name)) {
+            return localScope.get(name);
         }
 
-        return currentScope.get(name);
+        if (globalScope.containsKey(name)) {
+            return globalScope.get(name);
+        }
+
+        throw new NullPointerException("No definition exists by the name of " + name);
     }
 
     public boolean hasDefinition(String name) {
-        return currentScope.containsKey(name);
+        return localScope.containsKey(name) || globalScope.containsKey(name);
     }
 
-    public void setDefinition(String name, Value value) {
-        if (currentScope.containsKey(name)) {
+    public void setLocalDefinition(String name, Value value) {
+        if (hasDefinition(name)) {
             throw new IllegalArgumentException("Definition " + name + " is already defined!");
         }
 
-        currentScope.put(name, value);
+        localScope.put(name, value);
     }
 
-    public ProgramScope copy() {
+    /**
+     * Sets a global definition that will get passed onto the nested scopes
+     */
+    public void setGlobalDefinition(String name, Value value) {
+        if (hasDefinition(name)) {
+            throw new IllegalArgumentException("Definition " + name + " is already defined!");
+        }
+
+        globalScope.put(name, value);
+    }
+
+    /**
+     * Builds a new scope with the same global variables
+     */
+    public ProgramScope buildNew() {
         return new ProgramScope(this);
     }
 
-    public void removeDefinition(String name) {
-        if (!currentScope.containsKey(name)) {
-            throw new IllegalArgumentException("Definition " + name + " is not defined");
+    public void removeLocalDefinition(String name) {
+        if (!localScope.containsKey(name)) {
+            throw new IllegalArgumentException("Definition " + name + " is not defined in local scope!");
         }
 
-        currentScope.remove(name);
+        localScope.remove(name);
     }
 }

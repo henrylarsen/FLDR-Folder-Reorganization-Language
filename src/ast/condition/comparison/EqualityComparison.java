@@ -16,4 +16,11 @@ public class EqualityComparison extends AbstractComparison {
     protected boolean compare(Value leftValue, Value rightValue) {
         return leftValue.getValue().equals(rightValue.getValue());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) return false;
+        if (this == o) return true;
+        return o != null && getClass() == o.getClass();
+    }
 }

@@ -4,6 +4,7 @@ import ast.operand.Operand;
 import libs.ProgramScope;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * leftOperand IS ONE OF rightOperand
@@ -30,5 +31,13 @@ public class OneOfCondition extends AbstractCondition {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OneOfCondition that = (OneOfCondition) o;
+        return Objects.equals(leftOperand, that.leftOperand) && Objects.equals(rightOperand, that.rightOperand);
     }
 }

@@ -5,6 +5,7 @@ import ast.operand.Operand;
 import libs.ProgramScope;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SingleFolder extends AbstractFolder {
     private Operand name;
@@ -27,5 +28,13 @@ public class SingleFolder extends AbstractFolder {
             subfolder.evaluate(scope);
         }
         System.out.println("Finished evaluating " + name.toString());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SingleFolder that = (SingleFolder) o;
+        return Objects.equals(name, that.name) && Objects.equals(condition, that.condition) && Objects.equals(subfolders, that.subfolders);
     }
 }

@@ -1,5 +1,7 @@
 package libs.value;
 
+import java.util.Objects;
+
 public class StringValue extends Value {
     private final String value;
 
@@ -37,5 +39,13 @@ public class StringValue extends Value {
     @Override
     public String coerceToString() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StringValue that = (StringValue) o;
+        return Objects.equals(value, that.value);
     }
 }
