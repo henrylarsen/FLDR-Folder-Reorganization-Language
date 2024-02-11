@@ -9,17 +9,12 @@ public class SizeConverter {
     public static final int GB = MB * 1024;
 
 
-    /*
-    Takes strings of form <numeric value> <unit>
-
-     */
     public SizeConverter() {
-
     }
 
     /*
-    Takes strings of form <numeric value> <unit>
-
+        Takes strings of form <numeric value> <unit>
+        and returns the quantity in bytes
      */
     public double convertToBytes(String s) {
         String regex = "(\\s*\\.?\\d+(.\\d+)?)\\s*(\\w+)\s*";
