@@ -23,4 +23,12 @@ public class EqualityComparison extends AbstractComparison {
         if (this == o) return true;
         return o != null && getClass() == o.getClass();
     }
+
+    @Override
+    public String toString() {
+        return "EqualityComparison{" +
+                "leftOperand=" + leftOperand +
+                ", rightOperand=" + rightOperand +
+                '}';
+    }
 }

@@ -25,18 +25,16 @@ boolean: (NOT)? (singular_check | one_of); // Includes IS ONEOF...
 function: CONDITION_PAR_START function_params CONDITION_PAR_END;
 comparison: operator input;
 
-singular_check: input (comparison | function);
-
-blah: (input comparison)|((string|TEXT) function);
+singular_check: (TEXT function) | (input comparison);
 
 one_of: IS ONEOF list;
 
 function_params: input (PARAM_SPLIT input)*;
-input: string | var | TEXT;
+input: string | var | INT;
 operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS;
 
 string: STRING_START string_body STRING_END;
-string_body: (STRING_TEXT | string_var) (string_body)*;
+string_body: (STRING_TEXT | string_var)*;
 var: VAR_START VAR_TEXT VAR_END;
 
 string_var: STRING_VAR_START STRING_TEXT STRING_VAR_END;

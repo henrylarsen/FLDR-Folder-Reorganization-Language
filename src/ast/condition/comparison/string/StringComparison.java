@@ -30,4 +30,13 @@ public class StringComparison extends AbstractComparison {
         StringComparison that = (StringComparison) o;
         return comparisonType == that.comparisonType;
     }
+
+    @Override
+    public String toString() {
+        return "StringComparison{" +
+                "comparisonType=" + comparisonType +
+                ", leftOperand=" + leftOperand +
+                ", rightOperand=" + rightOperand +
+                '}';
+    }
 }

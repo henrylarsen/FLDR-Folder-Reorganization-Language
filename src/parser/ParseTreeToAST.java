@@ -5,11 +5,21 @@ import ast.Program;
 import ast.condition.AbstractCondition;
 import ast.condition.MacroCallCondition;
 import ast.condition.NegationCondition;
+import ast.condition.comparison.EqualityComparison;
+import ast.condition.comparison.numeric.NumericComparison;
+import ast.condition.comparison.numeric.NumericComparisonType;
+import ast.condition.comparison.string.StringComparison;
+import ast.condition.comparison.string.StringComparisonType;
 import ast.condition.junction.ConditionJunction;
 import ast.condition.junction.ConditionJunctionType;
 import ast.folder.AbstractFolder;
+import ast.operand.ConstantOperand;
 import ast.operand.Operand;
+import ast.operand.VariableOperand;
 import libs.Node;
+import libs.value.IntegerValue;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
@@ -25,7 +35,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
         List<AbstractFolder> folders = new ArrayList<>();
         for (DSLParser.FoldersContext folder : ctx.folders()) {
-            folders.add((AbstractFolder) folder.accept(this));
+            //folders.add((AbstractFolder) folder.accept(this));
         }
         return new Program(macros, folders);
     }
@@ -76,20 +86,49 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public AbstractCondition visitSingular_check(DSLParser.Singular_checkContext ctx) {
-        Operand l = (Operand) ctx.input().accept(this);
-        if (ctx.comparison() != null) {
+        if (ctx.comparison() != null) { // input comparison
+            Operand l = (Operand) ctx.input().accept(this);
+            Operand r = (Operand) ctx.comparison().input().accept(this);
+            DSLParser.OperatorContext operator = ctx.comparison().operator();
+            if (operator.COMP_E() != null) {
+                return new NumericComparison(l, r, NumericComparisonType.EQUAL_TO);
+            } else if (operator.COMP_G() != null) {
+                return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN);
+            } else if (operator.COMP_L() != null) {
+                return new NumericComparison(l, r, NumericComparisonType.LESS_THAN);
+            } else if (operator.INCLUDES() != null) {
+                return new StringComparison(l, r, StringComparisonType.CONTAINS);
+            } else if (operator.IS() != null) {
+                return new EqualityComparison(l, r);
+            }
             return null;
-        } else {
-            ctx.function().function_params();
-            // TODO: This line is incredibly janky but it's currently necessary because of how we parse the string
-            return new MacroCallCondition(l.getValue(null).coerceToString(), null);
+        } else { // TEXT function
+            String funName = ctx.TEXT().toString();
+            List<Operand> rands = ctx.function().function_params().input().stream().map(f -> (Operand) f.accept(this)).toList();
+            return new MacroCallCondition(funName, rands);
         }
     }
 
     @Override
     public Operand visitInput(DSLParser.InputContext ctx) {
-        // TODO
-        return null;
+        if (ctx.string() != null) { // String (possibly template string)
+            DSLParser.String_bodyContext strctx = ctx.string().string_body();
+
+            for (ParseTree tree : strctx.children) {
+                if (tree instanceof TerminalNode t) {
+                    Token symbol = t.getSymbol();
+                }
+            }
+
+            if (strctx.STRING_TEXT() != null) {
+                String value = strctx.STRING_TEXT().toString();
+            }
+            return null;
+        } else if (ctx.INT() != null) { // Integer
+            return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
+        } else { // Variable
+            return new VariableOperand(ctx.var().VAR_TEXT().toString());
+        }
     }
 
 }
