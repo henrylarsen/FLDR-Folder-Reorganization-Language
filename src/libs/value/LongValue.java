@@ -1,9 +1,9 @@
 package libs.value;
 
-public class IntegerValue extends Value {
-    private final int value;
+public class LongValue extends Value {
+    private final long value;
 
-    public IntegerValue(int value) {
+    public LongValue(long value) {
         this.value = value;
     }
 
@@ -13,20 +13,20 @@ public class IntegerValue extends Value {
     }
 
     @Override
-    public int coerceToInt() {
+    public long coerceToLong() {
         return value;
     }
 
     @Override
     public String coerceToString() {
-        return Integer.toString(value);
+        return Long.toString(value);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IntegerValue that = (IntegerValue) o;
+        LongValue that = (LongValue) o;
         return value == that.value;
     }
 }

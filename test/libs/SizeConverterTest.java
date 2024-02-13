@@ -16,23 +16,23 @@ public class SizeConverterTest {
 
     @Test
     public void unitTest() {
-        String b = "100.1 B";
+        String b = "100 B";
         String kb = "10 KB";
         String mb = "0.5 MB";
         String gb = "2 GB";
-        assertEquals(converter.convertToBytes(b), 100.1, 0);
-        assertEquals(converter.convertToBytes(kb), 10240, 0);
-        assertEquals(converter.convertToBytes(mb), Math.pow(2, 19), 0);
-        assertEquals(converter.convertToBytes(gb), Math.pow(2, 31), 0);
+        assertEquals(converter.convertToBytes(b), 100);
+        assertEquals(converter.convertToBytes(kb), 10240);
+        assertEquals(converter.convertToBytes(mb), 524288);
+        assertEquals(converter.convertToBytes(gb), 2147483648L);
     }
 
     @Test
     public void alternateFormats() {
-        String b = "100.1B";
+        String b = "100B";
         String kb = " 10     KB  ";
         String mb = "0.5 MB";
-        assertEquals(converter.convertToBytes(b), 100.1, 0);
-        assertEquals(converter.convertToBytes(kb), 10240, 0);
-        assertEquals(converter.convertToBytes(mb), Math.pow(2, 19), 0);
+        assertEquals(converter.convertToBytes(b), 100);
+        assertEquals(converter.convertToBytes(kb), 10240);
+        assertEquals(converter.convertToBytes(mb), 524288);
     }
 }

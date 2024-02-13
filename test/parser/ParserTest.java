@@ -14,7 +14,7 @@ import ast.operand.ConstantOperand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
-import libs.value.IntegerValue;
+import libs.value.LongValue;
 import libs.value.StringValue;
 import libs.value.Value;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class ParserTest {
 
         isNew = new NumericComparison(
                 new VariableOperand("DATE"),
-                new ConstantOperand(new IntegerValue(20240101)),
+                new ConstantOperand(new LongValue(20240101)),
                 NumericComparisonType.GREATER_THAN
         );
 

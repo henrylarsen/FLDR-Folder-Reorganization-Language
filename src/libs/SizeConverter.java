@@ -8,7 +8,6 @@ public class SizeConverter {
     public static final int MB = KB * 1024;
     public static final int GB = MB * 1024;
 
-
     public SizeConverter() {
     }
 
@@ -16,7 +15,7 @@ public class SizeConverter {
         Takes strings of form <numeric value> <unit>
         and returns the quantity in bytes
      */
-    public double convertToBytes(String s) {
+    public long convertToBytes(String s) {
         String regex = "(\\s*\\.?\\d+(.\\d+)?)\\s*(\\w+)\s*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(s);
@@ -25,21 +24,29 @@ public class SizeConverter {
             throw new IllegalArgumentException("Invalid format. Expected a numeric value followed by a unit.");
         }
 
+        // allows for decimals in user input
         double size = Double.parseDouble(matcher.group(1));
         String unit = matcher.group(3).toUpperCase();
 
         switch (unit) {
             case "B":
-                return size;
+                break;
             case "KB":
-                return size * KB;
+                size = size * KB;
+                break;
             case "MB":
-                return size * MB;
+                size = size * MB;
+                break;
             case "GB":
-                return size * GB;
+                size = size * GB;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid unit. Expected B/KB/MB/GB.");
         }
+
+        // rounded down to a whole number
+        return (long)size;
+
     }
 
 }

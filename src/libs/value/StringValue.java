@@ -15,11 +15,11 @@ public class StringValue extends Value {
     }
 
     @Override
-    public int coerceToInt() {
+    public long coerceToLong() {
         try {
-            return Integer.parseInt(value);
+            return Long.parseLong(value);
         } catch (NumberFormatException ex) {
-            throw new UnsupportedOperationException("Cannot coerce value '" + value + "' into an integer");
+            throw new UnsupportedOperationException("Cannot coerce value '" + value + "' into a long");
         }
     }
 
