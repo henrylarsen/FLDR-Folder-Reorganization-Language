@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class ParserTest {
     Node newpdfsProgram;
@@ -63,7 +64,7 @@ public class ParserTest {
                         "cat",
                         Arrays.asList(categories),
                         Collections.singletonList(new SingleFolder(
-                                new TemplateOperand(new VariableOperand("cat"), "$-folder"),
+                                new TemplateOperand(List.of(new VariableOperand("cat")), "$-folder"),
                                 new StringComparison(
                                         new VariableOperand("NAME"),
                                         new VariableOperand("cat"),

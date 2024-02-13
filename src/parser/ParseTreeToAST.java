@@ -15,10 +15,11 @@ import ast.condition.junction.ConditionJunctionType;
 import ast.folder.AbstractFolder;
 import ast.operand.ConstantOperand;
 import ast.operand.Operand;
+import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
 import libs.value.IntegerValue;
-import org.antlr.v4.runtime.Token;
+import libs.value.StringValue;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -113,17 +114,24 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     public Operand visitInput(DSLParser.InputContext ctx) {
         if (ctx.string() != null) { // String (possibly template string)
             DSLParser.String_bodyContext strctx = ctx.string().string_body();
-
+            StringBuilder resultStr = new StringBuilder();
+            List<String> vars = new ArrayList<>();
+            boolean isTemplate = false;
             for (ParseTree tree : strctx.children) {
                 if (tree instanceof TerminalNode t) {
-                    Token symbol = t.getSymbol();
+                    resultStr.append(t);
+                } else if (tree instanceof DSLParser.String_varContext var) {
+                    vars.add(var.STRING_TEXT().toString());
+                    resultStr.append("$");
+                    isTemplate = true;
                 }
             }
 
-            if (strctx.STRING_TEXT() != null) {
-                String value = strctx.STRING_TEXT().toString();
+            if (isTemplate) {
+                return new TemplateOperand(vars.stream().map(VariableOperand::new).toList(), resultStr.toString());
+            } else {
+                return new ConstantOperand(new StringValue(resultStr.toString()));
             }
-            return null;
         } else if (ctx.INT() != null) { // Integer
             return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
         } else { // Variable
