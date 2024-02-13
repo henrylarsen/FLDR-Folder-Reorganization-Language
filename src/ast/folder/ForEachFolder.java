@@ -1,27 +1,27 @@
 package ast.folder;
 
+import ast.operand.Operand;
 import libs.ProgramScope;
-import libs.value.Value;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ForEachFolder extends AbstractFolder {
     private final String name;
-    private final List<Value> values;
+    private final List<Operand> operands;
     private final List<AbstractFolder> subfolders;
 
-    public ForEachFolder(String name, List<Value> values, List<AbstractFolder> subfolders) {
+    public ForEachFolder(String name, List<Operand> operands, List<AbstractFolder> subfolders) {
         this.name = name;
-        this.values = values;
+        this.operands = operands;
         this.subfolders = subfolders;
     }
 
     @Override
     public void evaluate(ProgramScope scope) {
         System.out.println("Started evaluating FOREACH with variable: " + name);
-        for (Value value : values) {
-            scope.setLocalDefinition(name, value);
+        for (Operand operand : operands) {
+            scope.setLocalDefinition(name, operand.getValue(scope));
             for (AbstractFolder subfolder : subfolders) {
                 subfolder.evaluate(scope);
             }
@@ -36,6 +36,15 @@ public class ForEachFolder extends AbstractFolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ForEachFolder that = (ForEachFolder) o;
-        return Objects.equals(name, that.name) && Objects.equals(values, that.values) && Objects.equals(subfolders, that.subfolders);
+        return Objects.equals(name, that.name) && Objects.equals(operands, that.operands) && Objects.equals(subfolders, that.subfolders);
+    }
+
+    @Override
+    public String toString() {
+        return "ForEachFolder{" +
+                "name='" + name + '\'' +
+                ", operands=" + operands +
+                ", subfolders=" + subfolders +
+                '}';
     }
 }

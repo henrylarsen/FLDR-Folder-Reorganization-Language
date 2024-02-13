@@ -46,4 +46,12 @@ public class TemplateOperand extends Operand {
         TemplateOperand that = (TemplateOperand) o;
         return Objects.equals(variableOperands, that.variableOperands) && Objects.equals(template, that.template);
     }
+
+    @Override
+    public String toString() {
+        return "TemplateOperand{" +
+                "variableOperands=" + variableOperands +
+                ", template='" + template + '\'' +
+                '}';
+    }
 }

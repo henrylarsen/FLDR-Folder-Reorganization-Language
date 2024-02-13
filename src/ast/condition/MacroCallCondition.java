@@ -50,4 +50,12 @@ public class MacroCallCondition extends AbstractCondition {
         MacroCallCondition that = (MacroCallCondition) o;
         return Objects.equals(macroName, that.macroName) && Objects.equals(parameterValues, that.parameterValues);
     }
+
+    @Override
+    public String toString() {
+        return "MacroCallCondition{" +
+                "macroName='" + macroName + '\'' +
+                ", parameterValues=" + parameterValues +
+                '}';
+    }
 }

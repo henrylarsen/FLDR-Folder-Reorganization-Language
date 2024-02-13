@@ -11,12 +11,12 @@ import ast.condition.junction.ConditionJunctionType;
 import ast.folder.ForEachFolder;
 import ast.folder.SingleFolder;
 import ast.operand.ConstantOperand;
+import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
 import libs.value.IntegerValue;
 import libs.value.StringValue;
-import libs.value.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +57,10 @@ public class ParserTest {
                 ))
         );
 
-        Value[] categories = {new StringValue("school"), new StringValue("work"), new StringValue("home")};
+        Operand[] categories = {
+                new ConstantOperand(new StringValue("school")),
+                new ConstantOperand(new StringValue("work")),
+                new ConstantOperand(new StringValue("home"))};
         forEachProgram = new Program(
                 new ArrayList<>(),
                 Collections.singletonList(new ForEachFolder(

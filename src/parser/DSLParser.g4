@@ -9,25 +9,25 @@ condition_decl: TEXT CONDITION_PAR_START condition_params CONDITION_PAR_END;
 condition_params: TEXT (PARAM_SPLIT TEXT)*;
 
 folders: (folder | for_loop);
-folder: FOLDER_START string (contains)? (subfolders)?;
+folder: FOLDER_START (string|var) (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
 subfolders: HAS_SUBFOLDERS folders;
 for_loop: FOR_EACH TEXT IN list folder;
 
 list: ITER_START list_contents ITER_END;
-list_contents: string (PARAM_SPLIT string)*;
+list_contents: input (PARAM_SPLIT input)*;
 
 condition_body: boolean (junction condition_body)*;
 
 junction: AND | OR;
-boolean: (NOT)? (singular_check | one_of); // Includes IS ONEOF...
+boolean: (NOT)? singular_check;
 function: CONDITION_PAR_START function_params CONDITION_PAR_END;
 comparison: operator input;
 
-singular_check: (TEXT function) | (input comparison);
+singular_check: (TEXT function) | (input (comparison | one_of));
 
-one_of: IS ONEOF list;
+one_of: ONEOF list;
 
 function_params: input (PARAM_SPLIT input)*;
 input: string | var | INT;

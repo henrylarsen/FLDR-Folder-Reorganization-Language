@@ -5,6 +5,7 @@ import ast.Program;
 import ast.condition.AbstractCondition;
 import ast.condition.MacroCallCondition;
 import ast.condition.NegationCondition;
+import ast.condition.OneOfCondition;
 import ast.condition.comparison.EqualityComparison;
 import ast.condition.comparison.numeric.NumericComparison;
 import ast.condition.comparison.numeric.NumericComparisonType;
@@ -13,6 +14,8 @@ import ast.condition.comparison.string.StringComparisonType;
 import ast.condition.junction.ConditionJunction;
 import ast.condition.junction.ConditionJunctionType;
 import ast.folder.AbstractFolder;
+import ast.folder.ForEachFolder;
+import ast.folder.SingleFolder;
 import ast.operand.ConstantOperand;
 import ast.operand.Operand;
 import ast.operand.TemplateOperand;
@@ -65,13 +68,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public AbstractCondition visitBoolean(DSLParser.BooleanContext ctx) {
-        AbstractCondition rsf;
-        if (ctx.one_of() != null) {
-            rsf = (AbstractCondition) ctx.one_of().accept(this);
-        } else {
-            rsf = (AbstractCondition) ctx.singular_check().accept(this);
-        }
-
+        AbstractCondition rsf = (AbstractCondition) ctx.singular_check().accept(this);
         if (ctx.NOT() != null) {
             return new NegationCondition(rsf);
         } else {
@@ -79,31 +76,32 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
     }
 
-    @Override
-    public AbstractCondition visitOne_of(DSLParser.One_ofContext ctx) {
-        // TODO
-        return null;
-    }
 
     @Override
     public AbstractCondition visitSingular_check(DSLParser.Singular_checkContext ctx) {
-        if (ctx.comparison() != null) { // input comparison
+        if (ctx.input() != null) { // input ...
             Operand l = (Operand) ctx.input().accept(this);
-            Operand r = (Operand) ctx.comparison().input().accept(this);
-            DSLParser.OperatorContext operator = ctx.comparison().operator();
-            if (operator.COMP_E() != null) {
-                return new NumericComparison(l, r, NumericComparisonType.EQUAL_TO);
-            } else if (operator.COMP_G() != null) {
-                return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN);
-            } else if (operator.COMP_L() != null) {
-                return new NumericComparison(l, r, NumericComparisonType.LESS_THAN);
-            } else if (operator.INCLUDES() != null) {
-                return new StringComparison(l, r, StringComparisonType.CONTAINS);
-            } else if (operator.IS() != null) {
-                return new EqualityComparison(l, r);
+            if (ctx.comparison() != null) { // input comparison
+                Operand r = (Operand) ctx.comparison().input().accept(this);
+                DSLParser.OperatorContext operator = ctx.comparison().operator();
+                if (operator.COMP_E() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.EQUAL_TO);
+                } else if (operator.COMP_G() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN);
+                } else if (operator.COMP_L() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.LESS_THAN);
+                } else if (operator.INCLUDES() != null) {
+                    return new StringComparison(l, r, StringComparisonType.CONTAINS);
+                } else if (operator.IS() != null) {
+                    return new EqualityComparison(l, r);
+                }
+                // Should be unreachable
+                throw new IllegalArgumentException("Illegal operator at parsing. Implement in visitSingular_check");
+            } else { // input one_of
+                List<Operand> rights = ctx.one_of().list().list_contents().input()
+                        .stream().map(d -> (Operand) d.accept(this)).toList();
+                return new OneOfCondition(l, rights);
             }
-            // Should be unreachable
-            throw new IllegalArgumentException("Illegal operator at parsing. Implement in visitSingular_check");
         } else { // TEXT function
             String funName = ctx.TEXT().toString();
             List<Operand> rands = ctx.function().function_params().input().stream().map(f -> (Operand) f.accept(this)).toList();
@@ -114,25 +112,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     @Override
     public Operand visitInput(DSLParser.InputContext ctx) {
         if (ctx.string() != null) { // String (possibly template string)
-            DSLParser.String_bodyContext strctx = ctx.string().string_body();
-            StringBuilder resultStr = new StringBuilder();
-            List<String> vars = new ArrayList<>();
-            boolean isTemplate = false;
-            for (ParseTree tree : strctx.children) {
-                if (tree instanceof TerminalNode t) {
-                    resultStr.append(t);
-                } else if (tree instanceof DSLParser.String_varContext var) {
-                    vars.add(var.STRING_TEXT().toString());
-                    resultStr.append("$");
-                    isTemplate = true;
-                }
-            }
-
-            if (isTemplate) {
-                return new TemplateOperand(vars.stream().map(VariableOperand::new).toList(), resultStr.toString());
-            } else {
-                return new ConstantOperand(new StringValue(resultStr.toString()));
-            }
+            return (Operand) ctx.string().accept(this);
         } else if (ctx.INT() != null) { // Integer
             return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
         } else { // Variable
@@ -141,9 +121,64 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     }
 
     @Override
+    public Operand visitString(DSLParser.StringContext ctx) {
+        DSLParser.String_bodyContext strctx = ctx.string_body();
+        StringBuilder resultStr = new StringBuilder();
+        List<String> vars = new ArrayList<>();
+        boolean isTemplate = false;
+        for (ParseTree tree : strctx.children) {
+            if (tree instanceof TerminalNode t) {
+                resultStr.append(t);
+            } else if (tree instanceof DSLParser.String_varContext var) {
+                vars.add(var.STRING_TEXT().toString());
+                resultStr.append("$");
+                isTemplate = true;
+            }
+        }
+
+        if (isTemplate) {
+            return new TemplateOperand(vars.stream().map(VariableOperand::new).toList(), resultStr.toString());
+        } else {
+            return new ConstantOperand(new StringValue(resultStr.toString()));
+        }
+    }
+
+    @Override
+    public AbstractFolder visitFolders(DSLParser.FoldersContext ctx) {
+        if(ctx.folder() != null) { // single folder
+            return (AbstractFolder) ctx.folder().accept(this);
+        } else { // for each
+            String name = ctx.for_loop().TEXT().toString();
+            List<Operand> operands = ctx.for_loop().list().list_contents().input()
+                    .stream().map(d -> (Operand) d.accept(this)).toList();
+            // TODO: If we want multiple folders to be definable in a single for loop need to adjust this
+            List<AbstractFolder> subs = new ArrayList<>();
+            if (ctx.for_loop().folder() != null) {
+                subs.add((AbstractFolder) ctx.for_loop().folder().accept(this));
+            }
+            return new ForEachFolder(name, operands, subs);
+        }
+    }
+
+    @Override
     public AbstractFolder visitFolder(DSLParser.FolderContext ctx) {
-        // TODO
-        return null;
+        Operand name;
+        if (ctx.string() != null) { // string
+            name = (Operand) ctx.string().accept(this);
+        } else { // var
+            name = new VariableOperand(ctx.var().VAR_TEXT().toString());
+        }
+        AbstractCondition cond = null;
+        if (ctx.contains() != null) {
+            cond = (AbstractCondition) ctx.contains().condition_body().accept(this);
+        }
+
+        // TODO: This is broken, parsing doesn't allow for multiple subfolders and parsing is nondeterministic
+        List<AbstractFolder> subs = new ArrayList<>();
+        if (ctx.subfolders() != null) {
+            subs.add((AbstractFolder) ctx.subfolders().folders().accept(this));
+        }
+        return new SingleFolder(name, cond, subs);
     }
 
 }

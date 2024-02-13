@@ -2,6 +2,7 @@ package parser;
 
 import ast.Macro;
 import ast.Program;
+import ast.condition.OneOfCondition;
 import ast.condition.comparison.EqualityComparison;
 import ast.condition.comparison.numeric.NumericComparison;
 import ast.condition.comparison.numeric.NumericComparisonType;
@@ -28,7 +29,7 @@ public class ParserDirectTest {
         String slideInput = """
                 RESTRUCTURE "C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx"
                 
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {DATE_YEAR} > 2022
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {DATE_YEAR} ONEOF [2022,2024,2026]
                 
                 FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
@@ -63,11 +64,16 @@ public class ParserDirectTest {
                                         new VariableOperand("TYPE"),
                                         new ConstantOperand(new StringValue("png"))
                                 ),
-                                new NumericComparison(
-                                        new VariableOperand("DATE_YEAR"),
+//                                new NumericComparison(
+//                                        new VariableOperand("DATE_YEAR"),
+//                                        new ConstantOperand(new IntegerValue(2022)),
+//                                        NumericComparisonType.GREATER_THAN
+//                                )
+                                new OneOfCondition(new VariableOperand("DATE_YEAR"), List.of(
                                         new ConstantOperand(new IntegerValue(2022)),
-                                        NumericComparisonType.GREATER_THAN
-                                )
+                                        new ConstantOperand(new IntegerValue(2024)),
+                                        new ConstantOperand(new IntegerValue(2026))
+                                ))
                         )
                 ))),
                 Collections.emptyList()
