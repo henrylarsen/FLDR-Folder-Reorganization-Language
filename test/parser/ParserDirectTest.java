@@ -1,5 +1,16 @@
 package parser;
 
+import ast.Macro;
+import ast.Program;
+import ast.condition.comparison.EqualityComparison;
+import ast.condition.comparison.numeric.NumericComparison;
+import ast.condition.comparison.numeric.NumericComparisonType;
+import ast.condition.junction.ConditionJunction;
+import ast.condition.junction.ConditionJunctionType;
+import ast.operand.ConstantOperand;
+import ast.operand.VariableOperand;
+import libs.value.IntegerValue;
+import libs.value.StringValue;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
@@ -7,6 +18,8 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 public class ParserDirectTest {
@@ -33,6 +46,41 @@ public class ParserDirectTest {
         TokenStream tokens = new CommonTokenStream(lexer);
         DSLParser parser = new DSLParser(tokens);
         return parser.program();
+    }
+
+    Program result() {
+        return new Program(List.of(new Macro(
+                List.of("param_1", "param2"),
+                new ConditionJunction(
+                        ConditionJunctionType.AND,
+                        new NumericComparison(
+                                new ConstantOperand(new IntegerValue(0)),
+                                new VariableOperand("param_1"),
+                                NumericComparisonType.GREATER_THAN),
+                        new ConditionJunction(
+                                ConditionJunctionType.OR,
+                                new EqualityComparison(
+                                        new VariableOperand("TYPE"),
+                                        new ConstantOperand(new StringValue("png"))
+                                ),
+                                new NumericComparison(
+                                        new VariableOperand("DATE_YEAR"),
+                                        new ConstantOperand(new IntegerValue(2022)),
+                                        NumericComparisonType.GREATER_THAN
+                                )
+                        )
+                ))),
+                Collections.emptyList()
+        );
+    }
+
+    @Test
+    void parseTreeTest() {
+        DSLParser.ProgramContext p = parseExample();
+
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        //assertEquals(visitor.visitProgram(p), result());
+        System.out.println(visitor.visitProgram(p));
     }
 
     /**

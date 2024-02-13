@@ -8,7 +8,7 @@ condition: CONDITION_START condition_decl COLON condition_body;
 condition_decl: TEXT CONDITION_PAR_START condition_params CONDITION_PAR_END;
 condition_params: TEXT (PARAM_SPLIT TEXT)*;
 
-folders: (folder | for_loop) (folders)*;
+folders: (folder | for_loop);
 folder: FOLDER_START string (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
@@ -27,6 +27,7 @@ comparison: operator input;
 
 singular_check: input (comparison | function);
 
+blah: (input comparison)|((string|TEXT) function);
 
 one_of: IS ONEOF list;
 

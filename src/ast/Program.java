@@ -23,4 +23,11 @@ public class Program extends Node{
         return Objects.equals(macros, program.macros) && Objects.equals(folders, program.folders);
     }
 
+    @Override
+    public String toString() {
+        return "Program{" +
+                "macros=" + macros +
+                ", folders=" + folders +
+                '}';
+    }
 }

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 // TODO: Currently this allows for a single variable in a single template string
 //  Consider if this is the best way to do template strings / variable replacement
-public class TemplateOperand implements Operand {
+public class TemplateOperand extends Operand {
     private final VariableOperand variableOperand;
     private final String template;
 
