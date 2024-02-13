@@ -36,7 +36,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
         List<AbstractFolder> folders = new ArrayList<>();
         for (DSLParser.FoldersContext folder : ctx.folders()) {
-            //folders.add((AbstractFolder) folder.accept(this));
+            folders.add((AbstractFolder) folder.accept(this));
         }
         return new Program(macros, folders);
     }
@@ -102,7 +102,8 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             } else if (operator.IS() != null) {
                 return new EqualityComparison(l, r);
             }
-            return null;
+            // Should be unreachable
+            throw new IllegalArgumentException("Illegal operator at parsing. Implement in visitSingular_check");
         } else { // TEXT function
             String funName = ctx.TEXT().toString();
             List<Operand> rands = ctx.function().function_params().input().stream().map(f -> (Operand) f.accept(this)).toList();
@@ -137,6 +138,12 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         } else { // Variable
             return new VariableOperand(ctx.var().VAR_TEXT().toString());
         }
+    }
+
+    @Override
+    public AbstractFolder visitFolder(DSLParser.FolderContext ctx) {
+        // TODO
+        return null;
     }
 
 }
