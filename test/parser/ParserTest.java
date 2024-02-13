@@ -2,6 +2,7 @@ package parser;
 
 import ast.Program;
 import ast.condition.AbstractCondition;
+import ast.condition.comparison.EqualityComparison;
 import ast.condition.comparison.numeric.NumericComparison;
 import ast.condition.comparison.numeric.NumericComparisonType;
 import ast.condition.comparison.string.StringComparison;
@@ -17,6 +18,9 @@ import ast.operand.VariableOperand;
 import libs.Node;
 import libs.value.IntegerValue;
 import libs.value.StringValue;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ParserTest {
     Node newpdfsProgram;
     Node forEachProgram;
@@ -32,12 +38,23 @@ public class ParserTest {
     AbstractCondition isNew;
     AbstractCondition isNewAndPdf;
 
+    private Program parse(String input) {
+        DSLLexer lexer = new DSLLexer(CharStreams.fromString(input));
+        lexer.reset();
+        TokenStream tokens = new CommonTokenStream(lexer);
+        DSLParser parser = new DSLParser(tokens);
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        Program program = (Program) parser.program().accept(visitor);
+
+        System.out.println("Parsed: " + program);
+        return program;
+    }
+
     @BeforeEach
     public void initialize() {
-        isPdf = new StringComparison(
+        isPdf = new EqualityComparison(
                 new VariableOperand("TYPE"),
-                new ConstantOperand(new StringValue("pdf")),
-                StringComparisonType.IS_IGNORE_CASE
+                new ConstantOperand(new StringValue("pdf"))
         );
 
         isNew = new NumericComparison(
@@ -80,8 +97,14 @@ public class ParserTest {
     }
 
     @Test
-    void helloWorld() {
-        System.out.println("Hello world!");
-    }
+    public void testNewPdfsProgram() {
+        String input = """
+                RESTRUCTURE "C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx"
+                                
+                FOLDER "pdfs folder"
+                    CONTAINS: {TYPE} IS "pdf" AND {DATE} > 20240101
+                """;
 
+        assertEquals(parse(input), newpdfsProgram);
+    }
 }

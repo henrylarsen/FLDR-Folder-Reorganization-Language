@@ -33,6 +33,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public Program visitProgram(DSLParser.ProgramContext ctx) {
+        // TODO: add restructure once the pr with that is merged
         List<Macro> macros = new ArrayList<>();
         for (DSLParser.ConditionContext macro : ctx.condition()) {
             macros.add((Macro) macro.accept(this));
@@ -43,6 +44,8 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
         return new Program(macros, folders);
     }
+
+    // ------------------------------- Conditions -------------------------------------
 
     @Override
     public Macro visitCondition(DSLParser.ConditionContext ctx) {
@@ -104,10 +107,13 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             }
         } else { // TEXT function
             String funName = ctx.TEXT().toString();
-            List<Operand> rands = ctx.function().function_params().input().stream().map(f -> (Operand) f.accept(this)).toList();
+            List<Operand> rands = ctx.function().function_params().input()
+                    .stream().map(f -> (Operand) f.accept(this)).toList();
             return new MacroCallCondition(funName, rands);
         }
     }
+
+    // ----------------------------------- Operands ---------------------------------------
 
     @Override
     public Operand visitInput(DSLParser.InputContext ctx) {
@@ -143,6 +149,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
     }
 
+    // ---------------------------------- Folders ---------------------------------------
     @Override
     public AbstractFolder visitFolders(DSLParser.FoldersContext ctx) {
         if(ctx.folder() != null) { // single folder
