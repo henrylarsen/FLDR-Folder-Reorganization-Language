@@ -19,6 +19,7 @@ public class TopToolbar extends Toolbar {
         this.panel = panel;
 
         add(createScriptButton("Load Script", LOAD_ACTION));
+        add(createButtonSpacer());
         add(createScriptButton("Save Script", SAVE_ACTION));
     }
 

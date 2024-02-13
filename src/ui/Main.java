@@ -1,10 +1,8 @@
 package ui;
 
-import com.bulenkov.darcula.DarculaLaf;
 import java.io.IOException;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicLookAndFeel;
 
 public class Main {
     static String example_input = """
@@ -18,9 +16,7 @@ public class Main {
                                 CONTAINS: cool_photos(2024) AND {TYPE} IS {file_type}
                 """;
 
-    public static void main(String[] args) throws UnsupportedLookAndFeelException, IOException {
-        BasicLookAndFeel darcula = new DarculaLaf();
-        UIManager.setLookAndFeel(darcula);
+    public static void main(String[] args) throws IOException {
         SwingUtilities.invokeLater(MainFrame::new);
 
         // TODO: When ready to run the program, call:

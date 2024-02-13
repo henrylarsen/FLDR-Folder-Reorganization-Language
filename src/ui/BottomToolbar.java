@@ -17,6 +17,7 @@ public class BottomToolbar extends Toolbar {
 
         // add buttons on the right
         add(createScriptButton("Preview", PREVIEW_ACTION));
+        add(createButtonSpacer());
         add(createScriptButton("Organize", ORGANIZE_ACTION));
     }
 
