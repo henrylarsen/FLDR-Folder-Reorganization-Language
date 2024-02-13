@@ -46,7 +46,6 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     }
 
     // ------------------------------- Conditions -------------------------------------
-
     @Override
     public Macro visitCondition(DSLParser.ConditionContext ctx) {
         List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
@@ -79,7 +78,6 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         }
     }
 
-
     @Override
     public AbstractCondition visitSingular_check(DSLParser.Singular_checkContext ctx) {
         if (ctx.input() != null) { // input ...
@@ -102,7 +100,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
                 throw new IllegalArgumentException("Illegal operator at parsing. Implement in visitSingular_check");
             } else { // input one_of
                 List<Operand> rights = ctx.one_of().list().list_contents().input()
-                        .stream().map(d -> (Operand) d.accept(this)).toList();
+                        .stream().map(in -> (Operand) in.accept(this)).toList();
                 return new OneOfCondition(l, rights);
             }
         } else { // TEXT function
@@ -128,11 +126,11 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public Operand visitString(DSLParser.StringContext ctx) {
-        DSLParser.String_bodyContext strctx = ctx.string_body();
         StringBuilder resultStr = new StringBuilder();
         List<String> vars = new ArrayList<>();
         boolean isTemplate = false;
-        for (ParseTree tree : strctx.children) {
+        for (ParseTree tree : ctx.string_body().children) {
+            // While not ideal, this is seemingly the best way to iterate through all tree children in tandem
             if (tree instanceof TerminalNode t) {
                 resultStr.append(t);
             } else if (tree instanceof DSLParser.String_varContext var) {
