@@ -8,11 +8,12 @@ condition: CONDITION_START condition_decl COLON condition_body;
 condition_decl: TEXT CONDITION_PAR_START condition_params CONDITION_PAR_END;
 condition_params: TEXT (PARAM_SPLIT TEXT)*;
 
-folders: (folder | for_loop);
+folders: (folder | for_loop) (folders)*;
 folder: FOLDER_START (string|var) (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
-subfolders: HAS_SUBFOLDERS folders;
+subfolders: HAS_SUBFOLDERS SUB_START folders ITER_END;
+//subfolders: HAS_SUBFOLDERS folders;
 for_loop: FOR_EACH TEXT IN list folder;
 
 list: ITER_START list_contents ITER_END;

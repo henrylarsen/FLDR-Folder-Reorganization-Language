@@ -42,7 +42,7 @@ COMP_LE: '<=' WS* -> mode(INPUT_MODE);
 WS : [\r\n\t ] -> channel(HIDDEN);
 
 mode SUB_MODE;
-START_SUB: '[' WS* -> mode(DEFAULT_MODE);
+SUB_START: '[' WS* -> mode(DEFAULT_MODE);
 
 mode INPUT_MODE;
 STRING_START: '"' -> mode(STRING_MODE);

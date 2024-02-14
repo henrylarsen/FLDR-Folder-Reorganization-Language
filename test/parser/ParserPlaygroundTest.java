@@ -20,12 +20,14 @@ public class ParserPlaygroundTest {
                 
                 FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
-                    HAS SUBFOLDERS
+                    HAS SUBFOLDERS [
                         FOLDER "folder_1"
                             CONTAINS: {NAME} INCLUDES "cat"
                         FOREACH file_type in ["pdf", "png", "jpg"]
                             FOLDER "folder_{file_type}5"
                                 CONTAINS: new_condition(2, {file_type})
+                        ]
+                        
                                 
                 FOLDER "folder2"
                 """;
