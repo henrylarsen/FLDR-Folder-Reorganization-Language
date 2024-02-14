@@ -4,28 +4,37 @@ import libs.ProgramScope;
 import libs.value.StringValue;
 import libs.value.Value;
 
+import java.util.List;
 import java.util.Objects;
 
-// TODO: Currently this allows for a single variable in a single template string
-//  Consider if this is the best way to do template strings / variable replacement
-public class TemplateOperand implements Operand {
-    private final VariableOperand variableOperand;
+public class TemplateOperand extends Operand {
+    private final List<VariableOperand> variableOperands;
     private final String template;
 
     /**
      *
-     * @param variableOperand A variable whose value should replace the $ character in template
+     * @param variableOperands A variable whose value should replace the $ character in template
      * @param template A string that includes a $ character
      */
-    public TemplateOperand(VariableOperand variableOperand, String template) {
-        this.variableOperand = variableOperand;
+    public TemplateOperand(List<VariableOperand> variableOperands, String template) {
+        this.variableOperands = variableOperands;
         this.template = template;
     }
 
     @Override
     public Value getValue(ProgramScope scope) {
-        String insertion = variableOperand.getValue(scope).coerceToString();
-        return new StringValue(template.replace("$", insertion));
+        List<String> insertion = variableOperands.stream().map(op -> op.getValue(scope).coerceToString()).toList();
+        StringBuilder resultStr = new StringBuilder();
+        int i = 0;
+        for (char c : template.toCharArray()) {
+            if (c == '$') {
+                resultStr.append(insertion.get(i));
+                i++;
+            } else {
+                resultStr.append(c);
+            }
+        }
+        return new StringValue(resultStr.toString());
     }
 
     @Override
@@ -33,6 +42,14 @@ public class TemplateOperand implements Operand {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TemplateOperand that = (TemplateOperand) o;
-        return Objects.equals(variableOperand, that.variableOperand) && Objects.equals(template, that.template);
+        return Objects.equals(variableOperands, that.variableOperands) && Objects.equals(template, that.template);
+    }
+
+    @Override
+    public String toString() {
+        return "TemplateOperand{" +
+                "variableOperands=" + variableOperands +
+                ", template='" + template + '\'' +
+                '}';
     }
 }

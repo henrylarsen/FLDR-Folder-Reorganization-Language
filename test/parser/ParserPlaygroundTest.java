@@ -9,13 +9,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-public class ParserDirectTest {
+// Tests in this file don't have assertions, they're just for trying things and printing results
+public class ParserPlaygroundTest {
 
     DSLParser.ProgramContext parseExample() {
         String slideInput = """
-                RESTRUCTURE "C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx"
+                RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
                 
-                CONDITION new_condition(param_1, param2) : (0 > {param_1}) AND {TYPE} IS "png" OR {DATE_YEAR} > 2022
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {DATE_YEAR} ONEOF [2022,2024,2026]
                 
                 FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
@@ -36,9 +37,18 @@ public class ParserDirectTest {
     }
 
     /**
+     * Print string representation of an ast
+     */
+    @Test
+    void parseTreeTest() {
+        DSLParser.ProgramContext p = parseExample();
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        System.out.println(visitor.visitProgram(p));
+    }
+
+    /**
      * Tests to visualize the parse tree
      */
-
     @Test
     void lectureExampleTest() {
         DSLParser.ProgramContext p = parseExample();

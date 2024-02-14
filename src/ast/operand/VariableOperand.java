@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * An operand referring to a variable
  */
-public class VariableOperand implements Operand {
+public class VariableOperand extends Operand {
     private final String variableName;
 
     public VariableOperand(String variableName) {

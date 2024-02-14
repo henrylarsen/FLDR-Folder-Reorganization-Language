@@ -44,4 +44,11 @@ public class Macro extends Node {
         return Objects.equals(parameters, macro.parameters) && Objects.equals(childCondition, macro.childCondition);
     }
 
+    @Override
+    public String toString() {
+        return "Macro{" +
+                "parameters=" + parameters +
+                ", childCondition=" + childCondition +
+                '}';
+    }
 }

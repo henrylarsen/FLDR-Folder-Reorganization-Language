@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * e.g. 5 or "hello"
  */
-public class ConstantOperand implements Operand {
+public class ConstantOperand extends Operand  {
     private final Value constantValue;
 
     public ConstantOperand(Value constantValue) {
