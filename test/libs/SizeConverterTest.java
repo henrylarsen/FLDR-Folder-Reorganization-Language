@@ -7,23 +7,16 @@ import org.junit.jupiter.api.TestFactory;
 import static org.junit.Assert.assertEquals;
 
 public class SizeConverterTest {
-    SizeConverter converter;
-
-    @BeforeEach
-    public void setUp() {
-        converter = new SizeConverter();
-    }
-
     @Test
     public void unitTest() {
         String b = "100 B";
         String kb = "10 KB";
         String mb = "0.5 MB";
         String gb = "2 GB";
-        assertEquals(converter.convertToBytes(b), 100);
-        assertEquals(converter.convertToBytes(kb), 10240);
-        assertEquals(converter.convertToBytes(mb), 524288);
-        assertEquals(converter.convertToBytes(gb), 2147483648L);
+        assertEquals(SizeConverter.convertToBytes(b), 100);
+        assertEquals(SizeConverter.convertToBytes(kb), 10240);
+        assertEquals(SizeConverter.convertToBytes(mb), 524288);
+        assertEquals(SizeConverter.convertToBytes(gb), 2147483648L);
     }
 
     @Test
@@ -31,8 +24,8 @@ public class SizeConverterTest {
         String b = "100B";
         String kb = " 10     KB  ";
         String mb = "0.5 MB";
-        assertEquals(converter.convertToBytes(b), 100);
-        assertEquals(converter.convertToBytes(kb), 10240);
-        assertEquals(converter.convertToBytes(mb), 524288);
+        assertEquals(SizeConverter.convertToBytes(b), 100);
+        assertEquals(SizeConverter.convertToBytes(kb), 10240);
+        assertEquals(SizeConverter.convertToBytes(mb), 524288);
     }
 }

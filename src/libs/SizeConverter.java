@@ -3,19 +3,17 @@ package libs;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SizeConverter {
-    public static final int KB = 1024;
-    public static final int MB = KB * 1024;
-    public static final int GB = MB * 1024;
-
-    public SizeConverter() {
-    }
+public final class SizeConverter {
+    private static final int KB = 1024;
+    private static final int MB = KB * 1024;
+    private static final int GB = MB * 1024;
+    private SizeConverter(){}
 
     /*
         Takes strings of form <numeric value> <unit>
         and returns the quantity in bytes
      */
-    public long convertToBytes(String s) {
+    public static long convertToBytes(String s) {
         String regex = "(\\s*\\.?\\d+(.\\d+)?)\\s*(\\w+)\s*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(s);
