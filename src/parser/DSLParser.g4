@@ -18,24 +18,23 @@ for_loop: FOR_EACH TEXT IN list folder;
 list: ITER_START list_contents ITER_END;
 list_contents: string (PARAM_SPLIT string)*;
 
-condition_body: boolean (junction condition_body)*;
+condition_body: CONDITION_PAR_START? boolean CONDITION_PAR_END? (junction condition_body)*;
 
 junction: AND | OR;
-boolean: (NOT)? (singular_check | one_of); // Includes IS ONEOF...
+boolean: (NOT)? input (singular_check | one_of); // Includes IS ONEOF...
 function: CONDITION_PAR_START function_params CONDITION_PAR_END;
 comparison: operator input;
 
-singular_check: input (comparison | function);
-
+singular_check: (comparison | function);
 
 one_of: IS ONEOF list;
 
 function_params: input (PARAM_SPLIT input)*;
-input: string | var | TEXT;
-operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS;
+input: string | var | TEXT | INT;
+operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS | COMP_GE | COMP_LE;
 
 string: STRING_START string_body STRING_END;
-string_body: (STRING_TEXT | string_var) (string_body)*;
+string_body: (STRING_TEXT | string_var)*;
 var: VAR_START VAR_TEXT VAR_END;
 
 string_var: STRING_VAR_START STRING_TEXT STRING_VAR_END;
