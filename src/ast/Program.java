@@ -104,7 +104,8 @@ public class Program extends Node{
     @Override
     public String toString() {
         return "Program{" +
-                "macros=" + macros +
+                "targetDirectory=" + targetDirectory +
+                ", macros=" + macros +
                 ", folders=" + folders +
                 '}';
     }

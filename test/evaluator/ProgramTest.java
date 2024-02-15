@@ -51,10 +51,10 @@ public class ProgramTest {
             new ArrayList<>());
     ForEachFolder forPdfTxtFolder = new ForEachFolder(
             "ending",
-            new ArrayList<>(Arrays.asList(new StringValue("pdf"), new StringValue("txt"))),
+            new ArrayList<>(Arrays.asList(new ConstantOperand(new StringValue("pdf")), new ConstantOperand(new StringValue("txt")))),
             new ArrayList<>(Arrays.asList(
                     new SingleFolder(
-                            new TemplateOperand(new VariableOperand("ending"), "$-folder"),
+                            new TemplateOperand(List.of(new VariableOperand("ending")), "$-folder"),
                             new StringComparison(
                                     new VariableOperand("FILE_TYPE"),
                                     new VariableOperand("ending"),
