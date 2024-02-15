@@ -42,7 +42,7 @@ public class ParserPlaygroundTest {
         String slideInput = """
                 RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
                 
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {SIZE} > 200MB
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {SIZE} > 200GB
                 
                 FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")

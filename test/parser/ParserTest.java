@@ -16,7 +16,7 @@ import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
-import libs.value.IntegerValue;
+import libs.value.LongValue;
 import libs.value.StringValue;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -59,7 +59,7 @@ public class ParserTest {
 
         isNew = new NumericComparison(
                 new VariableOperand("DATE"),
-                new ConstantOperand(new IntegerValue(20240101)),
+                new ConstantOperand(new LongValue(20240101)),
                 NumericComparisonType.GREATER_THAN
         );
 

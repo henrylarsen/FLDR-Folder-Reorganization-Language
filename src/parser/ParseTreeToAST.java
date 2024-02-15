@@ -20,9 +20,8 @@ import ast.operand.ConstantOperand;
 import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
-import com.sun.jdi.LongValue;
 import libs.Node;
-import libs.value.IntegerValue;
+import libs.value.LongValue;
 import libs.value.StringValue;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -122,10 +121,27 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     public Operand visitInput(DSLParser.InputContext ctx) {
         if (ctx.string() != null) { // String (possibly template string)
             return (Operand) ctx.string().accept(this);
-        } else if (ctx.INT() != null) { // Integer
-            return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
         } else if (ctx.size() != null) { // Size
-            return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
+
+            if (ctx.size().SIZE_GB() != null) { // GB
+                String val = ctx.size().SIZE_GB().toString().trim();
+                String byte_val = val.substring(0, val.length() - 2).concat("000000000");
+                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+            } else if (ctx.size().SIZE_MB() != null) { // MB
+                String val = ctx.size().SIZE_MB().toString().trim();
+                String byte_val = val.substring(0, val.length() - 2).concat("000000");
+                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+            } else if (ctx.size().SIZE_KB() != null) { // KB
+                String val = ctx.size().SIZE_KB().toString().trim();
+                String byte_val = val.substring(0, val.length() - 2).concat("000");
+                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+            } else { // B
+                String val = ctx.size().SIZE_B().toString().trim();
+                String byte_val = val.substring(0, val.length() - 1);
+                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+            }
+        } else if (ctx.INT() != null) { // Long
+            return new ConstantOperand(new LongValue(Long.parseLong(ctx.INT().toString().trim())));
         } else { // Variable
             return new VariableOperand(ctx.var().VAR_TEXT().toString());
         }

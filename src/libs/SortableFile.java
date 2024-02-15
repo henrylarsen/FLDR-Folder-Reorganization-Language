@@ -1,6 +1,6 @@
 package libs;
 
-import libs.value.IntegerValue;
+import libs.value.LongValue;
 import libs.value.StringValue;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class SortableFile {
     private void setFileScope(ProgramScope scope) {
         this.scope = scope.buildNew();
         this.scope.setGlobalDefinition("FILE_NAME", new StringValue(this.name));
-        this.scope.setGlobalDefinition("FILE_SIZE", new IntegerValue(this.size));
+        this.scope.setGlobalDefinition("FILE_SIZE", new LongValue(this.size));
         this.scope.setGlobalDefinition("FILE_TYPE", new StringValue(this.type));
         this.scope.setGlobalDefinition("FILE_PATH", new StringValue(this.path.toString()));
         this.scope.setGlobalDefinition("FILE_DATE", new StringValue(this.date.toString()));
@@ -56,8 +56,8 @@ public class SortableFile {
 
     /* FileTime class already converts all values in toString method,
         so naive implementation works robustly */
-    private IntegerValue stripDate(String date, int start, int end) {
-        return new IntegerValue(Integer.parseInt(date.substring(start, end)));
+    private LongValue stripDate(String date, int start, int end) {
+        return new LongValue(Integer.parseInt(date.substring(start, end)));
     }
 
 

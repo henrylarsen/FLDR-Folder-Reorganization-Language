@@ -19,7 +19,7 @@ public class NumericComparison extends AbstractComparison {
 
     @Override
     protected boolean compare(Value leftValue, Value rightValue) {
-        return comparisonType.compare(leftValue.coerceToInt(), rightValue.coerceToInt());
+        return comparisonType.compare(leftValue.coerceToLong(), rightValue.coerceToLong());
     }
 
     @Override
