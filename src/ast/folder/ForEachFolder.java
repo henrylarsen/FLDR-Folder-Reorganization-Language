@@ -18,17 +18,24 @@ public class ForEachFolder extends AbstractFolder {
     }
 
     @Override
-    public void evaluate(ProgramScope scope) {
+    public String evaluate(ProgramScope scope) {
+        String relativePathName = "";
         System.out.println("Started evaluating FOREACH with variable: " + name);
         for (Operand operand : operands) {
             scope.setLocalDefinition(name, operand.getValue(scope));
             for (AbstractFolder subfolder : subfolders) {
-                subfolder.evaluate(scope);
+                String folderName = subfolder.evaluate(scope);
+                if (!folderName.isEmpty()) {
+                    relativePathName = folderName;
+                    scope.removeLocalDefinition(name);
+                    return relativePathName;
+                }
             }
             // name has gone out of scope once the subfolders are done evaluating
             scope.removeLocalDefinition(name);
         }
         System.out.println("Finished evaluating FOREACH");
+        return relativePathName;
     }
 
     @Override

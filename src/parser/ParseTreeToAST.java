@@ -20,6 +20,7 @@ import ast.operand.ConstantOperand;
 import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
+import com.sun.jdi.LongValue;
 import libs.Node;
 import libs.value.IntegerValue;
 import libs.value.StringValue;
@@ -33,7 +34,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public Program visitProgram(DSLParser.ProgramContext ctx) {
-        // TODO: add restructure once the pr with that is merged
+        String path = ctx.start_path().PATH().toString();
         List<Macro> macros = new ArrayList<>();
         for (DSLParser.ConditionContext macro : ctx.condition()) {
             macros.add((Macro) macro.accept(this));
@@ -42,7 +43,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         for (DSLParser.FoldersContext folder : ctx.folders()) {
             folders.add((AbstractFolder) folder.accept(this));
         }
-        return new Program(macros, folders);
+        return new Program(path, macros, folders);
     }
 
     // ------------------------------- Conditions -------------------------------------
@@ -91,6 +92,10 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
                     return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN);
                 } else if (operator.COMP_L() != null) {
                     return new NumericComparison(l, r, NumericComparisonType.LESS_THAN);
+                } else if (operator.COMP_GE() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN_EQUAL);
+                } else if (operator.COMP_LE() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.LESS_THAN_EQUAL);
                 } else if (operator.INCLUDES() != null) {
                     return new StringComparison(l, r, StringComparisonType.CONTAINS);
                 } else if (operator.IS() != null) {
@@ -118,6 +123,8 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         if (ctx.string() != null) { // String (possibly template string)
             return (Operand) ctx.string().accept(this);
         } else if (ctx.INT() != null) { // Integer
+            return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
+        } else if (ctx.size() != null) { // Size
             return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
         } else { // Variable
             return new VariableOperand(ctx.var().VAR_TEXT().toString());
@@ -178,10 +185,12 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             cond = (AbstractCondition) ctx.contains().condition_body().accept(this);
         }
 
-        // TODO: This is broken, parsing doesn't allow for multiple subfolders and parsing is nondeterministic
         List<AbstractFolder> subs = new ArrayList<>();
         if (ctx.subfolders() != null) {
-            subs.add((AbstractFolder) ctx.subfolders().folders().accept(this));
+            for (DSLParser.FoldersContext folders : ctx.subfolders().folders()) {
+                subs.add((AbstractFolder) folders.accept(this));
+            }
+
         }
         return new SingleFolder(name, cond, subs);
     }

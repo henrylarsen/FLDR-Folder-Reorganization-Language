@@ -49,6 +49,10 @@ STRING_START: '"' -> mode(STRING_MODE);
 VAR_START: '{' WS* -> mode(VAR_MODE);
 TEXT: [a-zA-Z_] [a-zA-Z0-9_]* WS* -> mode(DEFAULT_MODE);
 INT: [0-9]+ WS* -> mode(DEFAULT_MODE);
+SIZE_B: [0-9]+'B' WS* -> mode(DEFAULT_MODE);
+SIZE_KB: [0-9]+'KB' WS* -> mode(DEFAULT_MODE);
+SIZE_MB: [0-9]+'MB' WS* -> mode(DEFAULT_MODE);
+SIZE_GB: [0-9]+'GB' WS* -> mode(DEFAULT_MODE);
 
 mode VAR_MODE;
 VAR_TEXT: [a-zA-Z0-9_]+ WS*;

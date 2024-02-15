@@ -38,6 +38,32 @@ public class ParserPlaygroundTest {
         return parser.program();
     }
 
+    DSLParser.ProgramContext parseExample2() {
+        String slideInput = """
+                RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
+                
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {SIZE} > 200MB
+                
+                FOLDER "folder1 fold"
+                    CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
+                    HAS SUBFOLDERS [
+                        FOLDER "folder_1"
+                            CONTAINS: {NAME} INCLUDES "cat"
+                        FOREACH file_type in ["pdf", "png", "jpg"]
+                            FOLDER "folder_{file_type}5"
+                                CONTAINS: new_condition(2, {file_type})
+                        ]
+                        
+                                
+                FOLDER "folder2"
+                """;
+        DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
+        lexer.reset();
+        TokenStream tokens = new CommonTokenStream(lexer);
+        DSLParser parser = new DSLParser(tokens);
+        return parser.program();
+    }
+
     /**
      * Print string representation of an ast
      */
@@ -48,12 +74,19 @@ public class ParserPlaygroundTest {
         System.out.println(visitor.visitProgram(p));
     }
 
+    @Test
+    void parseTreeTest2() {
+        DSLParser.ProgramContext p = parseExample2();
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        System.out.println(visitor.visitProgram(p));
+    }
+
     /**
      * Tests to visualize the parse tree
      */
     @Test
     void lectureExampleTest() {
-        DSLParser.ProgramContext p = parseExample();
+        DSLParser.ProgramContext p = parseExample2();
 
         Stack<Pair<ParseTree, Integer>> stack = new Stack<Pair<ParseTree, Integer>>();
         for (int i = 0; i < p.children.size(); i++) {
