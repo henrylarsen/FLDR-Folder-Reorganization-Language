@@ -33,7 +33,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public Program visitProgram(DSLParser.ProgramContext ctx) {
-        // TODO: add restructure once the pr with that is merged
+        String path = ctx.start_path().PATH().toString();
         List<Macro> macros = new ArrayList<>();
         for (DSLParser.ConditionContext macro : ctx.condition()) {
             macros.add((Macro) macro.accept(this));
@@ -42,7 +42,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         for (DSLParser.FoldersContext folder : ctx.folders()) {
             folders.add((AbstractFolder) folder.accept(this));
         }
-        return new Program(macros, folders);
+        return new Program(path, macros, folders);
     }
 
     // ------------------------------- Conditions -------------------------------------
