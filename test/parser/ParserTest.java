@@ -65,7 +65,7 @@ public class ParserTest {
 
         isNewAndPdf = new ConditionJunction(ConditionJunctionType.AND, isPdf, isNew);
 
-        newpdfsProgram = new Program(
+        newpdfsProgram = new Program("test",
                 Collections.emptyList(),
                 Collections.singletonList(new SingleFolder(
                         new ConstantOperand(new StringValue("pdfs folder")),
@@ -79,6 +79,7 @@ public class ParserTest {
                 new ConstantOperand(new StringValue("work")),
                 new ConstantOperand(new StringValue("home"))};
         forEachProgram = new Program(
+                "test",
                 new ArrayList<>(),
                 Collections.singletonList(new ForEachFolder(
                         "cat",

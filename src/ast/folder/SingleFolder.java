@@ -20,14 +20,19 @@ public class SingleFolder extends AbstractFolder {
 
 
     @Override
-    public void evaluate(ProgramScope scope) {
-        System.out.println("Started evaluating " + name.toString());
-        boolean result = condition.evaluate(scope);
-        System.out.println("Condition evaluated: " + result);
+    public String evaluate(ProgramScope scope) {
+        String relativePathName = "";
         for (AbstractFolder subfolder : subfolders) {
-            subfolder.evaluate(scope);
+            String folderName = subfolder.evaluate(scope);
+            if (!folderName.isEmpty()) {
+                relativePathName = name.getValue(scope).coerceToString() + "/" + folderName;
+                break;
+            }
         }
-        System.out.println("Finished evaluating " + name.toString());
+        if (relativePathName.isEmpty() && condition.evaluate(scope)) {
+            relativePathName = name.getValue(scope).coerceToString();
+        }
+        return relativePathName;
     }
 
     @Override

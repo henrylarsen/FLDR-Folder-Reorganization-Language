@@ -26,7 +26,7 @@ public class VariableOperand extends Operand {
 
     @Override
     public String toString() {
-        return "$" + variableName;
+        return variableName;
     }
 
     @Override
