@@ -13,7 +13,6 @@ folder: FOLDER_START (string|var) (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
 subfolders: HAS_SUBFOLDERS SUB_START folders ITER_END;
-//subfolders: HAS_SUBFOLDERS folders;
 for_loop: FOR_EACH TEXT IN list folder;
 
 list: ITER_START list_contents ITER_END;
