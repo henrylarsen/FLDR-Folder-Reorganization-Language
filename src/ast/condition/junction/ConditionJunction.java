@@ -36,4 +36,13 @@ public class ConditionJunction extends AbstractCondition {
         ConditionJunction that = (ConditionJunction) o;
         return junctionType == that.junctionType && Objects.equals(leftCondition, that.leftCondition) && Objects.equals(rightCondition, that.rightCondition);
     }
+
+    @Override
+    public String toString() {
+        return "ConditionJunction{" +
+                "junctionType=" + junctionType +
+                ", leftCondition=" + leftCondition +
+                ", rightCondition=" + rightCondition +
+                '}';
+    }
 }

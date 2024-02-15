@@ -6,7 +6,8 @@ public enum NumericComparisonType {
     GREATER_THAN((a, b) -> a > b),
     GREATER_THAN_EQUAL((a, b) -> a >= b),
     LESS_THAN((a, b) -> a < b),
-    LESS_THAN_EQUAL((a, b) -> a <= b);
+    LESS_THAN_EQUAL((a, b) -> a <= b),
+    EQUAL_TO((a,b) -> a == b);
 
     private BiFunction<Integer, Integer, Boolean> comparisonFunction;
 
