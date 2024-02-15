@@ -40,4 +40,12 @@ public class OneOfCondition extends AbstractCondition {
         OneOfCondition that = (OneOfCondition) o;
         return Objects.equals(leftOperand, that.leftOperand) && Objects.equals(rightOperand, that.rightOperand);
     }
+
+    @Override
+    public String toString() {
+        return "OneOfCondition{" +
+                "leftOperand=" + leftOperand +
+                ", rightOperand=" + rightOperand +
+                '}';
+    }
 }

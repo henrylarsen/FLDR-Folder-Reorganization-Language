@@ -37,4 +37,13 @@ public class SingleFolder extends AbstractFolder {
         SingleFolder that = (SingleFolder) o;
         return Objects.equals(name, that.name) && Objects.equals(condition, that.condition) && Objects.equals(subfolders, that.subfolders);
     }
+
+    @Override
+    public String toString() {
+        return "SingleFolder{" +
+                "name=" + name +
+                ", condition=" + condition +
+                ", subfolders=" + subfolders +
+                '}';
+    }
 }

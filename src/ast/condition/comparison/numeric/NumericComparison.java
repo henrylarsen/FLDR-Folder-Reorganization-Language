@@ -30,4 +30,13 @@ public class NumericComparison extends AbstractComparison {
         NumericComparison that = (NumericComparison) o;
         return comparisonType == that.comparisonType;
     }
+
+    @Override
+    public String toString() {
+        return "NumericComparison{" +
+                "comparisonType=" + comparisonType +
+                ", leftOperand=" + leftOperand +
+                ", rightOperand=" + rightOperand +
+                '}';
+    }
 }
