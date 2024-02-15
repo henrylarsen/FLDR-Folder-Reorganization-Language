@@ -9,13 +9,13 @@ public enum NumericComparisonType {
     LESS_THAN_EQUAL((a, b) -> a <= b),
     EQUAL_TO((a,b) -> a == b);
 
-    private BiFunction<Integer, Integer, Boolean> comparisonFunction;
+    private BiFunction<Long, Long, Boolean> comparisonFunction;
 
-    NumericComparisonType(BiFunction<Integer, Integer, Boolean> comparisonFunction) {
+    NumericComparisonType(BiFunction<Long, Long, Boolean> comparisonFunction) {
         this.comparisonFunction = comparisonFunction;
     }
 
-    public boolean compare(int leftValue, int rightValue) {
+    public boolean compare(long leftValue, long rightValue) {
         return this.comparisonFunction.apply(leftValue, rightValue);
     }
 }

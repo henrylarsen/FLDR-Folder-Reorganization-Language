@@ -9,8 +9,8 @@ public abstract class Value {
 
     public abstract Object getValue();
 
-    public int coerceToInt() {
-        throw createCannotCoerceToException("integer");
+    public long coerceToLong() {
+        throw createCannotCoerceToException("long");
     }
 
     public boolean coerceToBoolean() {

@@ -21,7 +21,7 @@ import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
-import libs.value.IntegerValue;
+import libs.value.LongValue;
 import libs.value.StringValue;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -117,8 +117,8 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     public Operand visitInput(DSLParser.InputContext ctx) {
         if (ctx.string() != null) { // String (possibly template string)
             return (Operand) ctx.string().accept(this);
-        } else if (ctx.INT() != null) { // Integer
-            return new ConstantOperand(new IntegerValue(Integer.parseInt(ctx.INT().toString().trim())));
+        } else if (ctx.INT() != null) { // Long
+            return new ConstantOperand(new LongValue(Long.parseLong(ctx.INT().toString().trim())));
         } else { // Variable
             return new VariableOperand(ctx.var().VAR_TEXT().toString());
         }
