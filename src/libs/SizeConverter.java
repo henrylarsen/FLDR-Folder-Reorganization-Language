@@ -10,16 +10,16 @@ public final class SizeConverter {
     private SizeConverter(){}
 
     /*
-        Takes strings of form <numeric value> <unit>
+        Takes strings of form <numeric value><unit>
         and returns the quantity in bytes
      */
     public static long convertToBytes(String s) {
-        String regex = "(\\s*\\.?\\d+(.\\d+)?)\\s*(\\w+)\s*";
+        String regex = "(\\s*\\.?\\d+(.\\d+)?)(\\w+)\s*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(s);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid format. Expected a numeric value followed by a unit.");
+            throw new IllegalArgumentException("Invalid format. Expected a numeric value directly followed by a unit.");
         }
 
         // allows for decimals in user input
