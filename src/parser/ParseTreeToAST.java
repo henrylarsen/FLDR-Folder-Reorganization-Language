@@ -34,7 +34,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
     @Override
     public Program visitProgram(DSLParser.ProgramContext ctx) {
-        String path = ctx.start_path().PATH().toString();
+        String path = ctx.start_path().PATH().toString().trim();
         List<Macro> macros = new ArrayList<>();
         for (DSLParser.ConditionContext macro : ctx.condition()) {
             macros.add((Macro) macro.accept(this));
@@ -49,10 +49,11 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     // ------------------------------- Conditions -------------------------------------
     @Override
     public Macro visitCondition(DSLParser.ConditionContext ctx) {
+        String name = ctx.condition_decl().TEXT().toString().trim();
         List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
-        List<String> params = symbols.stream().map(Object::toString).toList();
+        List<String> params = symbols.stream().map(Object::toString).map(String::trim).toList();
         AbstractCondition condition = (AbstractCondition) ctx.condition_body().accept(this);
-        return new Macro(params, condition);
+        return new Macro(name, params, condition);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
                 return new OneOfCondition(l, rights);
             }
         } else { // TEXT function
-            String funName = ctx.TEXT().toString();
+            String funName = ctx.TEXT().toString().trim();
             List<Operand> rands = ctx.function().function_params().input()
                     .stream().map(f -> (Operand) f.accept(this)).toList();
             return new MacroCallCondition(funName, rands);
@@ -140,7 +141,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         } else if (ctx.INT() != null) { // Long
             return new ConstantOperand(new LongValue(Long.parseLong(ctx.INT().toString().trim())));
         } else { // Variable
-            return new VariableOperand(ctx.var().VAR_TEXT().toString());
+            return new VariableOperand(ctx.var().VAR_TEXT().toString().trim());
         }
     }
 
@@ -154,16 +155,16 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             if (tree instanceof TerminalNode t) {
                 resultStr.append(t);
             } else if (tree instanceof DSLParser.String_varContext var) {
-                vars.add(var.STRING_TEXT().toString());
+                vars.add(var.STRING_TEXT().toString().trim());
                 resultStr.append("$");
                 isTemplate = true;
             }
         }
 
         if (isTemplate) {
-            return new TemplateOperand(vars.stream().map(VariableOperand::new).toList(), resultStr.toString());
+            return new TemplateOperand(vars.stream().map(VariableOperand::new).toList(), resultStr.toString().trim());
         } else {
-            return new ConstantOperand(new StringValue(resultStr.toString()));
+            return new ConstantOperand(new StringValue(resultStr.toString().trim()));
         }
     }
 
@@ -173,7 +174,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         if(ctx.folder() != null) { // single folder
             return (AbstractFolder) ctx.folder().accept(this);
         } else { // for each
-            String name = ctx.for_loop().TEXT().toString();
+            String name = ctx.for_loop().TEXT().toString().trim();
             List<Operand> operands = ctx.for_loop().list().list_contents().input()
                     .stream().map(d -> (Operand) d.accept(this)).toList();
             // TODO: If we want multiple folders to be definable in a single for loop need to adjust this
@@ -191,7 +192,7 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
         if (ctx.string() != null) { // string
             name = (Operand) ctx.string().accept(this);
         } else { // var
-            name = new VariableOperand(ctx.var().VAR_TEXT().toString());
+            name = new VariableOperand(ctx.var().VAR_TEXT().toString().trim());
         }
         AbstractCondition cond = null;
         if (ctx.contains() != null) {

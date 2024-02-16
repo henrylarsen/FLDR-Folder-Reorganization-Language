@@ -28,4 +28,11 @@ public class MacroValue extends Value {
         MacroValue that = (MacroValue) o;
         return Objects.equals(value, that.value);
     }
+
+    @Override
+    public String toString() {
+        return "MacroValue{" +
+                "value=" + value +
+                '}';
+    }
 }

@@ -29,4 +29,11 @@ public class LongValue extends Value {
         LongValue that = (LongValue) o;
         return value == that.value;
     }
+
+    @Override
+    public String toString() {
+        return "IntegerValue{" +
+                "value=" + value +
+                '}';
+    }
 }

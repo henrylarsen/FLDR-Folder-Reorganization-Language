@@ -65,6 +65,6 @@ public class SortableFile {
     /* FileTime class already converts all values in toString method,
         so naive implementation works robustly */
     private LongValue stripDate(String date, int start, int end) {
-        return new LongValue(Integer.parseInt(date.substring(start, end)));
+        return new LongValue(Long.parseLong(date.substring(start, end)));
     }
 }
