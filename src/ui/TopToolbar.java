@@ -7,11 +7,14 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Represents the top toolbar, providing access to load/save scripts?
+ * Represents the top toolbar, providing access to load/save scripts and editor options
  */
 public class TopToolbar extends Toolbar {
     private static final String LOAD_ACTION = "load";
     private static final String SAVE_ACTION = "save";
+    private static final String EDITOR = "editor";
+    private static final String EXAMPLE = "example";
+    private static final String STUDY_TASK = "study task";
 
     private MainPanel panel;
 
@@ -21,24 +24,43 @@ public class TopToolbar extends Toolbar {
         add(createScriptButton("Load Script", LOAD_ACTION));
         add(createButtonSpacer());
         add(createScriptButton("Save Script", SAVE_ACTION));
+        add(createButtonSpacer());
+        add(Box.createHorizontalGlue());
+        add(createScriptButton("Script Editor", EDITOR));
+        add(createButtonSpacer());
+        add(createScriptButton("Example Syntax", EXAMPLE));
+        add(createButtonSpacer());
+        add(createScriptButton("Study Task", STUDY_TASK));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean load = e.getActionCommand().equals(LOAD_ACTION);
+        boolean save = e.getActionCommand().equals(SAVE_ACTION);
+        boolean edit = e.getActionCommand().equals(EDITOR);
+        boolean example = e.getActionCommand().equals(EXAMPLE);
+        boolean studyTask = e.getActionCommand().equals(STUDY_TASK);
         int selectMode = load ? FileDialog.LOAD : FileDialog.SAVE;
-        FileDialog selectDialog = createFileDialog(selectMode);
-        File resultantFile = getSelectedFile(selectDialog);
-
-        if (resultantFile == null) {
-            return;
+        File resultantFile = null;
+        if (load || save ) {
+            FileDialog selectDialog = createFileDialog(selectMode);
+            resultantFile = getSelectedFile(selectDialog);
+            if (resultantFile == null) {
+                return;
+            }
         }
 
         try {
             if (load) {
                 panel.loadScript(resultantFile);
-            } else {
+            } else if (save) {
                 panel.saveScriptTo(resultantFile);
+            } else if (edit) {
+                panel.setMode(EditorMode.EDIT);
+            } else if (example) {
+                panel.setMode(EditorMode.EXAMPLE);
+            } else if (studyTask) {
+                panel.setMode(EditorMode.STUDY);
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog (

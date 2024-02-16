@@ -4,19 +4,66 @@ import ui.lib.TextLineNumber;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ScriptEditorComponent extends JScrollPane {
     private JTextPane textPanel = new JTextPane();
+    private boolean editMode;
+    private String userScript;
+    private String exampleScript;
+    private String studyScript;
+    private final String scriptPath = "Group9Project1/src/ui/scripts";
 
     public ScriptEditorComponent() {
         setViewportView(textPanel);
         setRowHeaderView(new TextLineNumber(textPanel));
+        textPanel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        setEditMode(true);
+        loadScripts();
+    }
 
-        textPanel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+    private void loadScripts() {
+        try {
+            exampleScript = Files.readString(Paths.get(scriptPath + "/example.txt").toAbsolutePath());
+        } catch (IOException ex) {
+            exampleScript = "Cannot load example script.";
+        }
+        try {
+            studyScript = Files.readString(Paths.get(scriptPath + "/study.txt").toAbsolutePath());
+        } catch (IOException ex) {
+            studyScript = "Cannot load study script.";
+        }
     }
 
     public void setScript(String fullScript) {
         textPanel.setText(fullScript);
+    }
+
+    public void setMode(EditorMode mode) {
+        switch (mode) {
+            case EDIT:
+                setEditMode(true);
+                setScript(userScript);
+                break;
+            case STUDY:
+                setEditMode(false);
+                setScript(studyScript);
+                break;
+            case EXAMPLE:
+                setEditMode(false);
+                setScript(exampleScript);
+                break;
+        }
+    }
+
+    public void setEditMode(boolean nextEditMode) {
+        if (editMode) {
+            userScript = getScript();
+        }
+        textPanel.setEditable(nextEditMode);
+        editMode = nextEditMode;
     }
 
     public String getScript() {

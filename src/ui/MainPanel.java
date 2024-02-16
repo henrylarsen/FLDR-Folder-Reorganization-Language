@@ -61,6 +61,10 @@ public class MainPanel extends JPanel {
         );
     }
 
+    public void setMode(EditorMode mode) {
+        scriptEditor.setMode(mode);
+    }
+
     public void previewScript() {
         // TODO
     }
