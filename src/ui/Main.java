@@ -18,11 +18,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         SwingUtilities.invokeLater(MainFrame::new);
-
-        // TODO: When ready to run the program, call:
-        DSLRunner runner = new DSLRunner();
-        String result = runner.run(example_input);
-        System.out.println(result);
     }
 
 }

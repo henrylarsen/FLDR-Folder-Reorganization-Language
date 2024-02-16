@@ -5,6 +5,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class FileTreeComponent extends JTree {
 
     public FileTreeComponent() {
+        setPaths("", Collections.emptyList());
     }
 
     /**
@@ -30,7 +33,7 @@ public class FileTreeComponent extends JTree {
      *
      * @param paths All the paths to display, including parents.
      */
-    public void setPaths(String targetDirectory, List<Path> paths) {
+    public void setPaths(String targetDirectory, Collection<Path> paths) {
         // convert absolute paths to relative paths for displaying in the tree neatly
         List<Path> relativePaths = paths.stream().map((path ->
                 Paths.get(path.toString().substring(targetDirectory.length())))

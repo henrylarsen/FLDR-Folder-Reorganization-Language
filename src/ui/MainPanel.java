@@ -1,13 +1,17 @@
 package ui;
 
+import ast.Program;
+import libs.ProgramScope;
+
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Using a border layout to place the main areas of the application:
@@ -18,12 +22,14 @@ import java.util.Arrays;
  *
  */
 public class MainPanel extends JPanel {
-    public static final int PREFERRED_WIDTH = 800;
-    public static final int PREFERRED_HEIGHT = 600;
+    public static final int PREFERRED_WIDTH = 1200;
+    public static final int PREFERRED_HEIGHT = 800;
 
     private final FileTreeComponent beforeScriptPreview = new FileTreeComponent();
     private final FileTreeComponent afterScriptPreview = new FileTreeComponent();
     private final ScriptEditorComponent scriptEditor = new ScriptEditorComponent();
+
+    private final DSLRunner dslRunner = new DSLRunner();
 
 
     public MainPanel() {
@@ -31,12 +37,8 @@ public class MainPanel extends JPanel {
         setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
 
         add(new TopToolbar(this), BorderLayout.NORTH);
-
         add(createCenterPanel(), BorderLayout.CENTER);
         add(new BottomToolbar(this), BorderLayout.SOUTH);
-//        beforeScriptPreview.setPaths(
-//                "/Users/ronaldchan/Documents/ubc/Year 4/CPSC 410",
-//                Arrays.asList(Paths.get("/Users/ronaldchan/Documents/ubc/Year 4/CPSC 410/Group9Project1/test")));
     }
 
     private JSplitPane createCenterPanel() {
@@ -67,10 +69,36 @@ public class MainPanel extends JPanel {
     }
 
     public void previewScript() {
-        // TODO
+        useScript(false);
     }
 
     public void executeScript() {
-        // TODO
+        useScript(true);
+    }
+
+    public void useScript(boolean move) {
+        Program program;
+        Map<Path, Path> pathMappings;
+
+        try {
+            program = dslRunner.getProgram(scriptEditor.getScript());
+            pathMappings = program.evaluate(new ProgramScope());
+        } catch (Throwable ex) {
+            JOptionPane.showMessageDialog (
+                    this,
+                    "An error occurred: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            ex.printStackTrace();
+            return;
+        }
+
+        beforeScriptPreview.setPaths(program.getTargetDirectory(), pathMappings.keySet());
+        afterScriptPreview.setPaths(program.getTargetDirectory(), pathMappings.values());
+
+        if (move) {
+            program.moveFiles(pathMappings);
+        }
     }
 }
