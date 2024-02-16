@@ -2,7 +2,7 @@ package scope;
 
 import libs.ProgramScope;
 import libs.SortableFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Path;
@@ -29,21 +29,21 @@ public class FileScopeTest {
         assertTrue(scope.hasDefinition("FILE_TYPE"));
 
         String name = scope.getDefinitionValue("FILE_NAME").coerceToString();
-        int size = scope.getDefinitionValue("FILE_SIZE").coerceToInt();
+        long size = scope.getDefinitionValue("FILE_SIZE").coerceToLong();
         String type = scope.getDefinitionValue("FILE_TYPE").coerceToString();
 
-        String date = scope.getDefinitionValue("FILE_DATE").coerceToString();
-        int day = scope.getDefinitionValue("DATE_DAY").coerceToInt();
-        int month = scope.getDefinitionValue("DATE_MONTH").coerceToInt();
-        int year = scope.getDefinitionValue("DATE_YEAR").coerceToInt();
+        long date = scope.getDefinitionValue("FILE_DATE").coerceToLong();
+        long day = scope.getDefinitionValue("FILE_DAY").coerceToLong();
+        long month = scope.getDefinitionValue("FILE_MONTH").coerceToLong();
+        long year = scope.getDefinitionValue("FILE_YEAR").coerceToLong();
 
         assertEquals(name, "Graduation.pdf");
         assertTrue(size > 0);
         assertEquals(type, "pdf");
 
-        assertEquals(date, "2023-09-06T18:13:20.6391252Z");
-        assertEquals(day, 6);
-        assertEquals(month, 9);
-        assertEquals(year, 2023);
+        assertEquals(date, 20240215);
+        assertEquals(day, 15);
+        assertEquals(month, 2);
+        assertEquals(year, 2024);
     }
 }
