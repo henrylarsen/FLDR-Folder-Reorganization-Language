@@ -5,7 +5,9 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 /**
  * Using a border layout to place the main areas of the application:
@@ -32,6 +34,9 @@ public class MainPanel extends JPanel {
 
         add(createCenterPanel(), BorderLayout.CENTER);
         add(new BottomToolbar(this), BorderLayout.SOUTH);
+//        beforeScriptPreview.setPaths(
+//                "/Users/ronaldchan/Documents/ubc/Year 4/CPSC 410",
+//                Arrays.asList(Paths.get("/Users/ronaldchan/Documents/ubc/Year 4/CPSC 410/Group9Project1/test")));
     }
 
     private JSplitPane createCenterPanel() {

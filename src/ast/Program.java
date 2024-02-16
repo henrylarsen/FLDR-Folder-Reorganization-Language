@@ -41,20 +41,20 @@ public class Program extends Node{
             context.setGlobalDefinition(macro.getName(), new MacroValue(macro));
         }
         Map<Path, Path> map = new HashMap<>();
-        for (Path path : files) {
-            String finalPathStringOfFile = targetDirectory;
-            String relativePath = getRelativeTargetPathOfFile(context, path);
-            if (!relativePath.isEmpty()) {  // if relative path is not empty, that means folder with matching condition is found
-                finalPathStringOfFile += "/" + relativePath;
+        for (Path filePath : files) {
+            String finalFilePathString = targetDirectory;
+            String relativeFilePath = getRelativeTargetPathForFile(context, filePath);
+            if (!relativeFilePath.isEmpty()) {  // if relative path is not empty, that means folder with matching condition is found
+                finalFilePathString += "/" + relativeFilePath;
             }
-            finalPathStringOfFile += "/" + path.getFileName();
-            map.put(path, Paths.get(finalPathStringOfFile));
+            finalFilePathString += "/" + filePath.getFileName();
+            map.put(filePath, Paths.get(finalFilePathString));
         }
         return map;
     }
 
     // if no matching folder condition is found, return ""
-    private String getRelativeTargetPathOfFile(ProgramScope context, Path file) {
+    private String getRelativeTargetPathForFile(ProgramScope context, Path file) {
         SortableFile sFile = new SortableFile(file, context);
         String relativePathName = "";
         for (AbstractFolder folder : folders) {
@@ -87,14 +87,14 @@ public class Program extends Node{
             Path destination = entry.getValue();
             try {
                 if (Files.exists(destination) && !source.equals(destination)) {
-                    int suffix = 1;
-                    String fileName = destination.getFileName().toString();
-                    String baseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
-                    String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+                    int count = 1;
+                    String currentName = destination.getFileName().toString();
+                    String baseName = currentName.substring(0, currentName.lastIndexOf('.'));
+                    String fileType = currentName.substring(currentName.lastIndexOf('.'));
                     while (Files.exists(destination)) {
-                        fileName = baseFileName + " (" + suffix + ")" + fileExtension;
-                        destination = Paths.get(destination.getParent().toString(), fileName);
-                        suffix++;
+                        currentName = baseName + " (" + count + ")" + fileType;
+                        destination = Paths.get(destination.getParent().toString(), currentName);
+                        count++;
                     }
                 }
                 Files.createDirectories(destination.getParent());
