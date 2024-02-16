@@ -21,6 +21,7 @@ import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
+import libs.SizeConverter;
 import libs.value.LongValue;
 import libs.value.StringValue;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -125,20 +126,16 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
 
             if (ctx.size().SIZE_GB() != null) { // GB
                 String val = ctx.size().SIZE_GB().toString().trim();
-                String byte_val = val.substring(0, val.length() - 2).concat("000000000");
-                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
             } else if (ctx.size().SIZE_MB() != null) { // MB
                 String val = ctx.size().SIZE_MB().toString().trim();
-                String byte_val = val.substring(0, val.length() - 2).concat("000000");
-                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
             } else if (ctx.size().SIZE_KB() != null) { // KB
                 String val = ctx.size().SIZE_KB().toString().trim();
-                String byte_val = val.substring(0, val.length() - 2).concat("000");
-                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
             } else { // B
                 String val = ctx.size().SIZE_B().toString().trim();
-                String byte_val = val.substring(0, val.length() - 1);
-                return new ConstantOperand(new LongValue(Long.parseLong(byte_val)));
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
             }
         } else if (ctx.INT() != null) { // Long
             return new ConstantOperand(new LongValue(Long.parseLong(ctx.INT().toString().trim())));
