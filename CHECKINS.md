@@ -421,3 +421,30 @@ These were the areas from User Study 1 that participants needed clarification on
 - Saturday, February 24th - Video Finished
 
 Moving User Study 2 up a few days to leave time to fix bugs, smooth error handling, and change what is needed.
+
+# Check-in 5
+
+## Status of user study (should be completed this week at the latest)
+
+_If you've done it, what were the findings? Did it go smoothly? What are the key elements of feedback you've learned from it?_
+
+Final user study is happening before Monday, February 18th, to be conducted by Henry & Louise
+
+## Are there any last changes to your design, implementation or tests? 
+
+_What will these improvements enable?_
+
+Some syntactic changes (bracketing around HAS SUBFOLDERS contents for specificity); more tests for coverage
+
+## Plans for final video (possible draft version).
+
+_Who is responsible for the rest? Make sure to check it for length, working sound etc._
+
+Harry to do actual demo recording with support from others
+
+## Planned timeline for the remaining days. What is there left to do?
+
+- E2e testing
+- UI work (preview changes)
+- User study
+- Incorporate feedback from study
