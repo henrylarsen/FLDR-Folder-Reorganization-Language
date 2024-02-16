@@ -12,10 +12,12 @@ import java.util.Objects;
  * when evaluated in scope
  */
 public class Macro extends Node {
+    private final String name;
     private final List<String> parameters;
     private final AbstractCondition childCondition;
 
-    public Macro(List<String> parameters, AbstractCondition childCondition) {
+    public Macro(String name, List<String> parameters, AbstractCondition childCondition) {
+        this.name = name;
         this.parameters = parameters;
         this.childCondition = childCondition;
     }
@@ -34,6 +36,10 @@ public class Macro extends Node {
         }
 
         return childCondition.evaluate(scope);
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

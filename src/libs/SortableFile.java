@@ -56,12 +56,15 @@ public class SortableFile {
         this.scope.setGlobalDefinition("FILE_SIZE", new LongValue(this.size));
         this.scope.setGlobalDefinition("FILE_TYPE", new StringValue(this.type));
         this.scope.setGlobalDefinition("FILE_PATH", new StringValue(this.path.toString()));
-
         this.scope.setGlobalDefinition("FILE_DATE", new LongValue(this.date));
         this.scope.setGlobalDefinition("FILE_YEAR", new LongValue(this.date / 10000));
         this.scope.setGlobalDefinition("FILE_MONTH", new LongValue(this.date / 100 % 100));
         this.scope.setGlobalDefinition("FILE_DAY", new LongValue(this.date % 100));
     }
 
-
+    /* FileTime class already converts all values in toString method,
+        so naive implementation works robustly */
+    private LongValue stripDate(String date, int start, int end) {
+        return new LongValue(Long.parseLong(date.substring(start, end)));
+    }
 }

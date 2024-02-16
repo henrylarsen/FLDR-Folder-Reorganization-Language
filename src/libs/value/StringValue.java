@@ -48,4 +48,11 @@ public class StringValue extends Value {
         StringValue that = (StringValue) o;
         return Objects.equals(value, that.value);
     }
+
+    @Override
+    public String toString() {
+        return "StringValue{" +
+                "value='" + value + '\'' +
+                '}';
+    }
 }

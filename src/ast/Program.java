@@ -4,6 +4,7 @@ import ast.folder.AbstractFolder;
 import libs.Node;
 import libs.ProgramScope;
 import libs.SortableFile;
+import libs.value.MacroValue;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,9 @@ public class Program extends Node{
 
     public Map<Path, Path> evaluate(ProgramScope context) {
         List<Path> files = getAllFiles(Paths.get(targetDirectory));
+        for (Macro macro : macros) {
+            context.setGlobalDefinition(macro.getName(), new MacroValue(macro));
+        }
         Map<Path, Path> map = new HashMap<>();
         for (Path path : files) {
             String finalPathStringOfFile = targetDirectory;
@@ -73,7 +77,7 @@ public class Program extends Node{
                 }
             }).collect(Collectors.toList());
         } catch (IOException e) {
-            throw new Error("Failed to get files from " + directory);
+            throw new Error("Error walking directory " + directory);
         }
     }
 

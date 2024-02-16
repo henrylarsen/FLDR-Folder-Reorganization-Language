@@ -30,6 +30,8 @@ public class ProgramScope {
             return globalScope.get(name);
         }
 
+        System.out.println("local: " + localScope);
+        System.out.println("global: " + globalScope);
         throw new NullPointerException("No definition exists by the name of " + name);
     }
 
