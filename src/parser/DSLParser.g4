@@ -12,7 +12,7 @@ folders: (folder | for_loop);
 folder: FOLDER_START (string|var) (contains)? (subfolders)?;
 
 contains: CONTAINS_START COLON condition_body;
-subfolders: HAS_SUBFOLDERS folders;
+subfolders: HAS_SUBFOLDERS SUB_START (folders)+ ITER_END;
 for_loop: FOR_EACH TEXT IN list folder;
 
 list: ITER_START list_contents ITER_END;
@@ -30,11 +30,12 @@ singular_check: (TEXT function) | (input (comparison | one_of));
 one_of: ONEOF list;
 
 function_params: input (PARAM_SPLIT input)*;
-input: string | var | INT;
-operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS;
+input: string | var | INT | size;
+operator: COMP_G | COMP_L | COMP_E | INCLUDES | IS | COMP_GE | COMP_LE;
 
 string: STRING_START string_body STRING_END;
 string_body: (STRING_TEXT | string_var)*;
 var: VAR_START VAR_TEXT VAR_END;
+size: SIZE_B | SIZE_KB | SIZE_MB | SIZE_GB;
 
 string_var: STRING_VAR_START STRING_TEXT STRING_VAR_END;
