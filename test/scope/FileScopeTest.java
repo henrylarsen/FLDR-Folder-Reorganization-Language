@@ -2,7 +2,7 @@ package scope;
 
 import libs.ProgramScope;
 import libs.SortableFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.Path;
@@ -32,18 +32,18 @@ public class FileScopeTest {
         long size = scope.getDefinitionValue("FILE_SIZE").coerceToLong();
         String type = scope.getDefinitionValue("FILE_TYPE").coerceToString();
 
-        String date = scope.getDefinitionValue("FILE_DATE").coerceToString();
-        long day = scope.getDefinitionValue("DATE_DAY").coerceToLong();
-        long month = scope.getDefinitionValue("DATE_MONTH").coerceToLong();
-        long year = scope.getDefinitionValue("DATE_YEAR").coerceToLong();
+        long date = scope.getDefinitionValue("FILE_DATE").coerceToLong();
+        long day = scope.getDefinitionValue("FILE_DAY").coerceToLong();
+        long month = scope.getDefinitionValue("FILE_MONTH").coerceToLong();
+        long year = scope.getDefinitionValue("FILE_YEAR").coerceToLong();
 
         assertEquals(name, "Graduation.pdf");
         assertTrue(size > 0);
         assertEquals(type, "pdf");
 
-        assertEquals(date, "2023-09-06T18:13:20.6391252Z");
-        assertEquals(day, 6);
-        assertEquals(month, 9);
-        assertEquals(year, 2023);
+        assertEquals(date, 20240215);
+        assertEquals(day, 15);
+        assertEquals(month, 2);
+        assertEquals(year, 2024);
     }
 }

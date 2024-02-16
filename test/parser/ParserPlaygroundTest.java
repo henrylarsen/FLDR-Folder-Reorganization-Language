@@ -16,7 +16,7 @@ public class ParserPlaygroundTest {
         String slideInput = """
                 RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
                 
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {DATE_YEAR} ONEOF [2022,2024,2026]
+                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {FILE_YEAR} ONEOF [2022,2024,2026]
                 
                 FOLDER "folder1 fold"
                     CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")

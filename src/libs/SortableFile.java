@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class SortableFile {
@@ -14,7 +17,7 @@ public class SortableFile {
     private String name;
     private int size;
     private String type;
-    private String date;
+    private long date;
     private ProgramScope scope;
 
     public SortableFile(Path path, ProgramScope scope) {
@@ -31,15 +34,20 @@ public class SortableFile {
         try {
             BasicFileAttributes attr = Files.readAttributes(this.path, BasicFileAttributes.class);
             this.size = Math.toIntExact(Long.valueOf(attr.size())); // throws exception in case of overflow
-            this.date = attr.lastModifiedTime().toString();
-
+            this.date = formatDate(attr.lastModifiedTime());
             this.name = String.valueOf(this.path.getFileName());
             int extensionIndex = this.name.lastIndexOf(".");
-            this.type = this.name.substring(extensionIndex+1);
+            this.type = this.name.substring(extensionIndex + 1);
 
         } catch (IOException e) {
             System.out.println("Could not read attributes of file: " + this.path);
         }
+    }
+
+    private long formatDate(FileTime lastModified) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(lastModified.toString());
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return Long.parseLong(dtf.format(zonedDateTime));
     }
 
     private void setFileScope(ProgramScope scope) {
@@ -48,10 +56,10 @@ public class SortableFile {
         this.scope.setGlobalDefinition("FILE_SIZE", new LongValue(this.size));
         this.scope.setGlobalDefinition("FILE_TYPE", new StringValue(this.type));
         this.scope.setGlobalDefinition("FILE_PATH", new StringValue(this.path.toString()));
-        this.scope.setGlobalDefinition("FILE_DATE", new StringValue(this.date.toString()));
-        this.scope.setGlobalDefinition("DATE_YEAR", stripDate(date, 0, 4));
-        this.scope.setGlobalDefinition("DATE_MONTH", stripDate(date, 5, 7));
-        this.scope.setGlobalDefinition("DATE_DAY", stripDate(date, 8, 10));
+        this.scope.setGlobalDefinition("FILE_DATE", new LongValue(this.date));
+        this.scope.setGlobalDefinition("FILE_YEAR", new LongValue(this.date / 10000));
+        this.scope.setGlobalDefinition("FILE_MONTH", new LongValue(this.date / 100 % 100));
+        this.scope.setGlobalDefinition("FILE_DAY", new LongValue(this.date % 100));
     }
 
     /* FileTime class already converts all values in toString method,
@@ -59,6 +67,4 @@ public class SortableFile {
     private LongValue stripDate(String date, int start, int end) {
         return new LongValue(Integer.parseInt(date.substring(start, end)));
     }
-
-
 }
