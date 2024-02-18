@@ -5,7 +5,7 @@ options { tokenVocab=DSLLexer; }
 program: start_path (condition)* (folders)+ EOF;
 start_path: START PATH;
 condition: CONDITION_START condition_decl COLON condition_body;
-condition_decl: TEXT CONDITION_PAR_START condition_params CONDITION_PAR_END;
+condition_decl: TEXT CONDITION_PAR_START (condition_params)? (CONDITION_PAR_END|NO_PARAM_PAR_END);
 condition_params: TEXT (PARAM_SPLIT TEXT)*;
 
 folders: (folder | for_loop);
@@ -18,11 +18,11 @@ for_loop: FOR_EACH TEXT IN list folder;
 list: ITER_START list_contents ITER_END;
 list_contents: input (PARAM_SPLIT input)*;
 
-condition_body: boolean (junction condition_body)*;
+condition_body: ((GROUP_PAR_START)? boolean (CONDITION_PAR_END?) (junction condition_body)*) | OTHER;
 
 junction: AND | OR;
 boolean: (NOT)? singular_check;
-function: CONDITION_PAR_START function_params CONDITION_PAR_END;
+function: CONDITION_PAR_START (function_params)? (CONDITION_PAR_END|NO_PARAM_PAR_END);
 comparison: operator input;
 
 singular_check: (TEXT function) | (input (comparison | one_of));

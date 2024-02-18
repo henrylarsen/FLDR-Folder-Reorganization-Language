@@ -10,10 +10,11 @@ public class Main {
 
                 FOLDER "root_folder"
                     CONTAINS: {FILE_YEAR} > 1990
-                    HAS SUBFOLDERS
+                    HAS SUBFOLDERS [
                         FOREACH file_type in ["pdf", "png", "jpg"]
                             FOLDER "2024_{file_type}"
                                 CONTAINS: cool_photos(2024) AND {FILE_TYPE} IS {file_type}
+                                ]
                 """;
 
     public static void main(String[] args) throws IOException {
