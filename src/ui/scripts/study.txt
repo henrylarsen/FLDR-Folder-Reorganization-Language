@@ -1,0 +1,15 @@
+RESTRUCTURE ./DOWNLOADS
+
+CONDITION is_during_year(year): {FILE_YEAR} = year
+
+FOLDER "DOWNLOADS-SORTED"
+CONTAINS: is_during_year(2020)
+HAS SUBFOLDERS [
+	FOREACH file_type in [“png”, “pdf”, “jpg”]
+    		FOLDER "2024-{file_type}"
+    			CONTAINS: is_during_year(2024) AND {FILE_TYPE} IS {file_type}
+	FOLDER "some-files"
+		CONTAINS: {FILE_SIZE} > 200KB AND {FILE_SIZE} < 300KB
+	FOLDER "other"
+		CONTAINS: OTHER
+]
