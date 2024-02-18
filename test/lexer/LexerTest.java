@@ -103,7 +103,7 @@ public class LexerTest {
     @Test
     public void forEachVarTest() throws MismatchedTokenException {
         DSLLexer lexer = new DSLLexer(CharStreams.fromString("""
-                FOREACH course_name in ["info300", "phil230"]
+                FOREACH course_name IN ["info300", "phil230"]
                	    FOLDER {course_name}
                			CONTAINS: {NAME} INCLUDES {course_name}
                 """));
@@ -111,7 +111,7 @@ public class LexerTest {
         List<? extends Token> tokens = lexer.getAllTokens();
         // Ignore hidden tokens
         tokens.removeIf(t -> t.getChannel() != 0);
-        List<String> expected_tokens = Arrays.asList("FOREACH", "course_name", "in", "[", "\"", "info300",
+        List<String> expected_tokens = Arrays.asList("FOREACH", "course_name", "IN", "[", "\"", "info300",
                 "\"", ",", "\"" ,"phil230", "\"", "]", "FOLDER", "{", "course_name", "}",
                 "CONTAINS", ":", "{", "NAME", "}", "INCLUDES", "{", "course_name", "}");
         assertEquals(expected_tokens.size(), tokens.size());
@@ -123,7 +123,7 @@ public class LexerTest {
     @Test
     public void forEachConsTest() throws MismatchedTokenException {
         DSLLexer lexer = new DSLLexer(CharStreams.fromString("""
-                FOREACH course_name in ["info300", "phil230"]
+                FOREACH course_name IN ["info300", "phil230"]
                	    FOLDER {course_name }
                			CONTAINS: {NAME} INCLUDES "course"
                 """));
@@ -131,7 +131,7 @@ public class LexerTest {
         List<? extends Token> tokens = lexer.getAllTokens();
         // Ignore hidden tokens
         tokens.removeIf(t -> t.getChannel() != 0);
-        List<String> expected_tokens = Arrays.asList("FOREACH", "course_name", "in", "[", "\"", "info300",
+        List<String> expected_tokens = Arrays.asList("FOREACH", "course_name", "IN", "[", "\"", "info300",
                 "\"", ",", "\"" ,"phil230", "\"", "]", "FOLDER", "{", "course_name", "}",
                 "CONTAINS", ":", "{", "NAME", "}", "INCLUDES", "\"", "course", "\"");
         assertEquals(expected_tokens.size(), tokens.size());
@@ -148,7 +148,7 @@ public class LexerTest {
                 FOLDER "root_folder"
                     CONTAINS: {FILE_YEAR} = 2020
                     HAS SUBFOLDERS [
-                        FOREACH file_type in ["pdf", "png", "jpg"]
+                        FOREACH file_type IN ["pdf", "png", "jpg"]
                             FOLDER "2024_{file_type}"
                                 CONTAINS: cool_photos(2024) AND {TYPE} IS {file_type}
                                 ]
@@ -164,7 +164,7 @@ public class LexerTest {
         "FOLDER", "\"","root_folder", "\"",
         "CONTAINS", ":",  "{", "FILE_YEAR", "}",  "=",  "2020",
         "HAS SUBFOLDERS", "[",
-        "FOREACH", "file_type", "in", "[", "\"", "pdf", "\"", ",", "\"", "png", "\"", ",", "\"", "jpg", "\"",
+        "FOREACH", "file_type", "IN", "[", "\"", "pdf", "\"", ",", "\"", "png", "\"", ",", "\"", "jpg", "\"",
         "]",
         "FOLDER", "\"" ,"2024_", "{", "file_type", "}", "\"",
         "CONTAINS", ":", "cool_photos", "(", "2024", ")", "AND", "{", "TYPE", "}", "IS", "{", "file_type", "}", "]");
@@ -183,7 +183,7 @@ public class LexerTest {
                 FOLDER "root_folder"
                     CONTAINS: {FILE_YEAR} = 2020
                     HAS SUBFOLDERS [
-                        FOREACH file_type in ["pdf", "png", "jpg"]
+                        FOREACH file_type IN ["pdf", "png", "jpg"]
                             FOLDER "2024_{file_type}"
                                 CONTAINS: cool_photos(2024) AND {TYPE} IS {file_type}
                                 ]
@@ -200,7 +200,7 @@ public class LexerTest {
                 "FOLDER", "\"","root_folder", "\"",
                 "CONTAINS", ":",  "{", "FILE_YEAR", "}",  "=",  "2020",
                 "HAS SUBFOLDERS", "[",
-                "FOREACH", "file_type", "in", "[", "\"", "pdf", "\"", ",", "\"", "png", "\"", ",", "\"", "jpg", "\"",
+                "FOREACH", "file_type", "IN", "[", "\"", "pdf", "\"", ",", "\"", "png", "\"", ",", "\"", "jpg", "\"",
                 "]",
                 "FOLDER", "\"" ,"2024_", "{", "file_type", "}", "\"",
                 "CONTAINS", ":", "cool_photos", "(", "2024", ")", "AND", "{", "TYPE", "}", "IS", "{", "file_type", "}",

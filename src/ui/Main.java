@@ -11,7 +11,7 @@ public class Main {
                 FOLDER "root_folder"
                     CONTAINS: {FILE_YEAR} > 1990
                     HAS SUBFOLDERS [
-                        FOREACH file_type in ["pdf", "png", "jpg"]
+                        FOREACH file_type IN ["pdf", "png", "jpg"]
                             FOLDER "2024_{file_type}"
                                 CONTAINS: cool_photos(2024) AND {FILE_TYPE} IS {file_type}
                                 ]

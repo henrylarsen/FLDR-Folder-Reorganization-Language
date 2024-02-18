@@ -21,7 +21,7 @@ public class ParserPlaygroundTest {
         FOLDER "DOWNLOADS-SORTED"
             CONTAINS: {FILE_NAME} INCLUDES "cat"
             HAS SUBFOLDERS [
-                FOREACH course_name in ["info300", "phil230"]
+                FOREACH course_name IN ["info300", "phil230"]
                            FOLDER {course_name}
                                 CONTAINS: {FILE_NAME} INCLUDES {course_name}
                 FOLDER "gpxes"
@@ -51,7 +51,7 @@ public class ParserPlaygroundTest {
                     HAS SUBFOLDERS [
                         FOLDER "folder_1"
                             CONTAINS: {NAME} INCLUDES "cat"
-                        FOREACH file_type in ["pdf", "png", "jpg"]
+                        FOREACH file_type IN ["pdf", "png", "jpg"]
                             FOLDER "folder_{file_type}5"
                                 CONTAINS: new_condition(2, {file_type}) AND no_params()
                             
@@ -59,6 +59,32 @@ public class ParserPlaygroundTest {
                                               
                 FOLDER "folder2"
                     CONTAINS: +OTHER
+                """;
+        DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
+        lexer.reset();
+        TokenStream tokens = new CommonTokenStream(lexer);
+        DSLParser parser = new DSLParser(tokens);
+        return parser.program();
+    }
+
+    DSLParser.ProgramContext parseExample3() {
+        String slideInput = """
+                RESTRUCTURE ./DOWNLOADS
+                
+                CONDITION is_during_year(year): {FILE_YEAR} = {year}
+                
+                FOLDER "DOWNLOADS-SORTED"
+                CONTAINS: is_during_year(2020)
+                HAS SUBFOLDERS [
+                    FOREACH file_type IN ["png", "pdf", "jpg"]
+                            FOLDER "2024-{file_type}"
+                                CONTAINS: is_during_year(2024) AND {FILE_TYPE} IS {file_type}
+                    FOLDER "some-files"
+                        CONTAINS: {FILE_SIZE} > 200KB AND {FILE_SIZE} < 300KB
+                    FOLDER "other"
+                        CONTAINS: +OTHER
+                ]
+
                 """;
         DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
         lexer.reset();
@@ -80,6 +106,13 @@ public class ParserPlaygroundTest {
     @Test
     void parseTreeTest2() {
         DSLParser.ProgramContext p = parseExample2();
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        System.out.println(visitor.visitProgram(p));
+    }
+
+    @Test
+    void parseTreeTest3() {
+        DSLParser.ProgramContext p = parseExample3();
         ParseTreeToAST visitor = new ParseTreeToAST();
         System.out.println(visitor.visitProgram(p));
     }

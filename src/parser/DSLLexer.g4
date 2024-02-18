@@ -21,7 +21,7 @@ CONDITION_PAR_END: ')' WS*;
 COLON: ':' WS* -> mode(INPUT_MODE);
 PARAM_SPLIT: ',' WS* -> mode(INPUT_MODE);
 
-IN: 'in' WS*;
+IN: 'IN' WS*;
 IS: 'IS' WS* -> mode(INPUT_MODE);
 AND: 'AND' WS* -> mode(INPUT_MODE);
 OR: 'OR' WS* -> mode(INPUT_MODE);
