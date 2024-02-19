@@ -13,7 +13,7 @@ public class BottomToolbar extends Toolbar {
     public BottomToolbar(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
 
-        add(createScriptButton("Program info", INFO_ACTION));
+        add(createScriptButton("Reference sheet", INFO_ACTION));
         // take up left side of space
         add(Box.createHorizontalGlue());
 
