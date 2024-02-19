@@ -3,7 +3,6 @@ lexer grammar DSLLexer;
 /*
 Structure of Tokenizer is completed with a few features missing:
 - usage of single quotes
-- regex for allowed path and text needs to be expanded
 */
 
 START: 'RESTRUCTURE' WS* -> mode(PATH_MODE);
@@ -17,15 +16,12 @@ FOLDER_START: 'FOLDER' WS* -> mode(INPUT_MODE);
 ONEOF: 'ONEOF' *WS;
 NOT: 'NOT' WS*;
 
-//CONDITION_PAR_START: '(';
-//CONDITION_PAR_END: ')';
-
 CONDITION_PAR_START: '(' WS* -> mode(INPUT_MODE);
 CONDITION_PAR_END: ')' WS*;
 COLON: ':' WS* -> mode(INPUT_MODE);
 PARAM_SPLIT: ',' WS* -> mode(INPUT_MODE);
 
-IN: 'in' WS*;
+IN: 'IN' WS*;
 IS: 'IS' WS* -> mode(INPUT_MODE);
 AND: 'AND' WS* -> mode(INPUT_MODE);
 OR: 'OR' WS* -> mode(INPUT_MODE);
@@ -53,13 +49,16 @@ SIZE_B: [0-9]+'B' WS* -> mode(DEFAULT_MODE);
 SIZE_KB: [0-9]+'KB' WS* -> mode(DEFAULT_MODE);
 SIZE_MB: [0-9]+'MB' WS* -> mode(DEFAULT_MODE);
 SIZE_GB: [0-9]+'GB' WS* -> mode(DEFAULT_MODE);
+GROUP_PAR_START: '(' WS*;
+NO_PARAM_PAR_END: ')' WS* -> mode(DEFAULT_MODE);
+OTHER: '+OTHER' WS* -> mode(DEFAULT_MODE);
 
 mode VAR_MODE;
 VAR_TEXT: [a-zA-Z0-9_]+ WS*;
 VAR_END: '}' WS* -> mode(DEFAULT_MODE);
 
 mode STRING_MODE;
-STRING_TEXT: [a-zA-Z0-9_]+ WS*;
+STRING_TEXT: ~[{}"\r]+;
 STRING_VAR_START: '{';
 STRING_VAR_END: '}';
 STRING_END: '"' WS* -> mode(DEFAULT_MODE);

@@ -2,10 +2,7 @@ package parser;
 
 import ast.Macro;
 import ast.Program;
-import ast.condition.AbstractCondition;
-import ast.condition.MacroCallCondition;
-import ast.condition.NegationCondition;
-import ast.condition.OneOfCondition;
+import ast.condition.*;
 import ast.condition.comparison.EqualityComparison;
 import ast.condition.comparison.numeric.NumericComparison;
 import ast.condition.comparison.numeric.NumericComparisonType;
@@ -50,14 +47,20 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     @Override
     public Macro visitCondition(DSLParser.ConditionContext ctx) {
         String name = ctx.condition_decl().TEXT().toString().trim();
-        List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
-        List<String> params = symbols.stream().map(Object::toString).map(String::trim).toList();
+        List<String> params = List.of();
+        if (ctx.condition_decl().condition_params() != null) {
+            List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
+            params = symbols.stream().map(Object::toString).map(String::trim).toList();
+        }
         AbstractCondition condition = (AbstractCondition) ctx.condition_body().accept(this);
         return new Macro(name, params, condition);
     }
 
     @Override
     public AbstractCondition visitCondition_body(DSLParser.Condition_bodyContext ctx) {
+        if (ctx.OTHER() != null) {
+            return new CatchAllCondition();
+        }
         AbstractCondition result = (AbstractCondition) ctx.boolean_().accept(this);
         for (int i = 0; i < ctx.junction().size(); i++) {
             AbstractCondition cond = (AbstractCondition) ctx.condition_body(i).accept(this);
@@ -111,8 +114,11 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             }
         } else { // TEXT function
             String funName = ctx.TEXT().toString().trim();
-            List<Operand> rands = ctx.function().function_params().input()
-                    .stream().map(f -> (Operand) f.accept(this)).toList();
+            List<Operand> rands = List.of();
+            if (ctx.function().function_params() != null) {
+                rands = ctx.function().function_params().input()
+                        .stream().map(f -> (Operand) f.accept(this)).toList();
+            }
             return new MacroCallCondition(funName, rands);
         }
     }

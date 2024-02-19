@@ -14,22 +14,23 @@ public class ParserPlaygroundTest {
 
     DSLParser.ProgramContext parseExample() {
         String slideInput = """
-                RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
-                
-                CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {TYPE} IS "png" OR {FILE_YEAR} ONEOF [2022,2024,2026]
-                
-                FOLDER "folder1 fold"
-                    CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
-                    HAS SUBFOLDERS [
-                        FOLDER "folder_1"
-                            CONTAINS: {NAME} INCLUDES "cat"
-                        FOREACH file_type in ["pdf", "png", "jpg"]
-                            FOLDER "folder_{file_type}5"
-                                CONTAINS: new_condition(2, {file_type})
-                        ]
-                        
-                                
-                FOLDER "folder2"
+        RESTRUCTURE ./DOWNLOADS
+        
+        CONDITION is_during_year(year): {FILE_YEAR} = {year}
+        
+        FOLDER "DOWNLOADS-SORTED"
+            CONTAINS: {FILE_NAME} INCLUDES "cat"
+            HAS SUBFOLDERS [
+                FOREACH course_name IN ["info300", "phil230"]
+                           FOLDER {course_name}
+                                CONTAINS: {FILE_NAME} INCLUDES {course_name}
+                FOLDER "gpxes"
+                    CONTAINS: {FILE_TYPE} IS "gpx" AND {FILE_DATE} >= 20080101
+                FOLDER "2024 photos"
+                    CONTAINS: is_during_year(2024) AND ({FILE_TYPE} ONEOF ["jpeg", "png", "jpg"])
+                FOLDER "other"
+                    CONTAINS: +OTHER
+            ]
                 """;
         DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
         lexer.reset();
@@ -43,19 +44,47 @@ public class ParserPlaygroundTest {
                 RESTRUCTURE "C:\\Users\\Henry\\Desktop\\Courses"
                 
                 CONDITION new_condition(param_1, param2) : 0 > {param_1} AND {SIZE} > 200GB
+                CONDITION no_params(): {FILE_NAME} INCLUDES "cat"
                 
                 FOLDER "folder1 fold"
-                    CONTAINS: {DATE_YEAR} = 2020 OR new_condition(0, "string")
+                    CONTAINS: no_params("s{var}") AND 3GB > {FILE_SIZE} OR {NAME} INCLUDES "cat"
                     HAS SUBFOLDERS [
                         FOLDER "folder_1"
                             CONTAINS: {NAME} INCLUDES "cat"
-                        FOREACH file_type in ["pdf", "png", "jpg"]
+                        FOREACH file_type IN ["pdf", "png", "jpg"]
                             FOLDER "folder_{file_type}5"
-                                CONTAINS: new_condition(2, {file_type})
+                                CONTAINS: new_condition(2, {file_type}) AND no_params()
+                            
                         ]
-                        
-                                
+                                              
                 FOLDER "folder2"
+                    CONTAINS: +OTHER
+                """;
+        DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
+        lexer.reset();
+        TokenStream tokens = new CommonTokenStream(lexer);
+        DSLParser parser = new DSLParser(tokens);
+        return parser.program();
+    }
+
+    DSLParser.ProgramContext parseExample3() {
+        String slideInput = """
+                RESTRUCTURE ./DOWNLOADS
+                
+                CONDITION is_during_year(year): {FILE_YEAR} = {year}
+                
+                FOLDER "DOWNLOADS-SORTED"
+                CONTAINS: is_during_year(2020)
+                HAS SUBFOLDERS [
+                    FOREACH file_type IN ["png", "pdf", "jpg"]
+                            FOLDER "2024-{file_type}"
+                                CONTAINS: is_during_year(2024) AND {FILE_TYPE} IS {file_type}
+                    FOLDER "some-files"
+                        CONTAINS: {FILE_SIZE} > 200KB AND {FILE_SIZE} < 300KB
+                    FOLDER "other"
+                        CONTAINS: +OTHER
+                ]
+
                 """;
         DSLLexer lexer = new DSLLexer(CharStreams.fromString(slideInput));
         lexer.reset();
@@ -77,6 +106,13 @@ public class ParserPlaygroundTest {
     @Test
     void parseTreeTest2() {
         DSLParser.ProgramContext p = parseExample2();
+        ParseTreeToAST visitor = new ParseTreeToAST();
+        System.out.println(visitor.visitProgram(p));
+    }
+
+    @Test
+    void parseTreeTest3() {
+        DSLParser.ProgramContext p = parseExample3();
         ParseTreeToAST visitor = new ParseTreeToAST();
         System.out.println(visitor.visitProgram(p));
     }

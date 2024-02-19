@@ -100,7 +100,7 @@ public class ParserTest {
     @Test
     public void testNewPdfsProgram() {
         String input = """
-                RESTRUCTURE "C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx"
+                RESTRUCTURE C:\\Users\\Henry\\OneDrive - UBC\\Desktop\\Cover Letters\\ICBC Full Stack - Cover Letter.docx
                                 
                 FOLDER "pdfs folder"
                     CONTAINS: {TYPE} IS "pdf" AND {DATE} > 20240101
