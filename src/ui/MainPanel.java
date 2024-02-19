@@ -5,9 +5,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 
 /**
  * Using a border layout to place the main areas of the application:
@@ -24,6 +22,7 @@ public class MainPanel extends JPanel {
     private final FileTreeComponent beforeScriptPreview = new FileTreeComponent();
     private final FileTreeComponent afterScriptPreview = new FileTreeComponent();
     private final ScriptEditorComponent scriptEditor = new ScriptEditorComponent();
+    private final InfoDialog infoDialog = new InfoDialog("FOL, Explained");
 
 
     public MainPanel() {
@@ -65,6 +64,10 @@ public class MainPanel extends JPanel {
 
     public void setMode(EditorMode mode) {
         scriptEditor.setMode(mode);
+    }
+
+    public void showDocs() {
+        infoDialog.setVisible(true);
     }
 
     public void previewScript() {
