@@ -28,6 +28,7 @@ public class MainPanel extends JPanel {
     private final FileTreeComponent beforeScriptPreview = new FileTreeComponent();
     private final FileTreeComponent afterScriptPreview = new FileTreeComponent();
     private final ScriptEditorComponent scriptEditor = new ScriptEditorComponent();
+    private final InfoDialog infoDialog = new InfoDialog("FOL, Explained");
 
     private final DSLRunner dslRunner = new DSLRunner();
 
@@ -66,6 +67,14 @@ public class MainPanel extends JPanel {
                 StandardOpenOption.TRUNCATE_EXISTING,
                 StandardOpenOption.CREATE_NEW
         );
+    }
+
+    public void setMode(EditorMode mode) {
+        scriptEditor.setMode(mode);
+    }
+
+    public void showDocs() {
+        infoDialog.setVisible(true);
     }
 
     public void previewScript() {

@@ -2,10 +2,7 @@ package parser;
 
 import ast.Macro;
 import ast.Program;
-import ast.condition.AbstractCondition;
-import ast.condition.MacroCallCondition;
-import ast.condition.NegationCondition;
-import ast.condition.OneOfCondition;
+import ast.condition.*;
 import ast.condition.comparison.EqualityComparison;
 import ast.condition.comparison.numeric.NumericComparison;
 import ast.condition.comparison.numeric.NumericComparisonType;
@@ -21,6 +18,7 @@ import ast.operand.Operand;
 import ast.operand.TemplateOperand;
 import ast.operand.VariableOperand;
 import libs.Node;
+import libs.SizeConverter;
 import libs.value.LongValue;
 import libs.value.StringValue;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -49,14 +47,20 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     @Override
     public Macro visitCondition(DSLParser.ConditionContext ctx) {
         String name = ctx.condition_decl().TEXT().toString().trim();
-        List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
-        List<String> params = symbols.stream().map(Object::toString).map(String::trim).toList();
+        List<String> params = List.of();
+        if (ctx.condition_decl().condition_params() != null) {
+            List<TerminalNode> symbols = ctx.condition_decl().condition_params().TEXT();
+            params = symbols.stream().map(Object::toString).map(String::trim).toList();
+        }
         AbstractCondition condition = (AbstractCondition) ctx.condition_body().accept(this);
         return new Macro(name, params, condition);
     }
 
     @Override
     public AbstractCondition visitCondition_body(DSLParser.Condition_bodyContext ctx) {
+        if (ctx.OTHER() != null) {
+            return new CatchAllCondition();
+        }
         AbstractCondition result = (AbstractCondition) ctx.boolean_().accept(this);
         for (int i = 0; i < ctx.junction().size(); i++) {
             AbstractCondition cond = (AbstractCondition) ctx.condition_body(i).accept(this);
@@ -92,6 +96,10 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
                     return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN);
                 } else if (operator.COMP_L() != null) {
                     return new NumericComparison(l, r, NumericComparisonType.LESS_THAN);
+                } else if (operator.COMP_GE() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.GREATER_THAN_EQUAL);
+                } else if (operator.COMP_LE() != null) {
+                    return new NumericComparison(l, r, NumericComparisonType.LESS_THAN_EQUAL);
                 } else if (operator.INCLUDES() != null) {
                     return new StringComparison(l, r, StringComparisonType.CONTAINS);
                 } else if (operator.IS() != null) {
@@ -106,8 +114,11 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             }
         } else { // TEXT function
             String funName = ctx.TEXT().toString().trim();
-            List<Operand> rands = ctx.function().function_params().input()
-                    .stream().map(f -> (Operand) f.accept(this)).toList();
+            List<Operand> rands = List.of();
+            if (ctx.function().function_params() != null) {
+                rands = ctx.function().function_params().input()
+                        .stream().map(f -> (Operand) f.accept(this)).toList();
+            }
             return new MacroCallCondition(funName, rands);
         }
     }
@@ -118,6 +129,21 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
     public Operand visitInput(DSLParser.InputContext ctx) {
         if (ctx.string() != null) { // String (possibly template string)
             return (Operand) ctx.string().accept(this);
+        } else if (ctx.size() != null) { // Size
+
+            if (ctx.size().SIZE_GB() != null) { // GB
+                String val = ctx.size().SIZE_GB().toString().trim();
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
+            } else if (ctx.size().SIZE_MB() != null) { // MB
+                String val = ctx.size().SIZE_MB().toString().trim();
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
+            } else if (ctx.size().SIZE_KB() != null) { // KB
+                String val = ctx.size().SIZE_KB().toString().trim();
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
+            } else { // B
+                String val = ctx.size().SIZE_B().toString().trim();
+                return new ConstantOperand(new LongValue(SizeConverter.convertToBytes(val)));
+            }
         } else if (ctx.INT() != null) { // Long
             return new ConstantOperand(new LongValue(Long.parseLong(ctx.INT().toString().trim())));
         } else { // Variable
@@ -179,10 +205,12 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             cond = (AbstractCondition) ctx.contains().condition_body().accept(this);
         }
 
-        // TODO: This is broken, parsing doesn't allow for multiple subfolders and parsing is nondeterministic
         List<AbstractFolder> subs = new ArrayList<>();
         if (ctx.subfolders() != null) {
-            subs.add((AbstractFolder) ctx.subfolders().folders().accept(this));
+            for (DSLParser.FoldersContext folders : ctx.subfolders().folders()) {
+                subs.add((AbstractFolder) folders.accept(this));
+            }
+
         }
         return new SingleFolder(name, cond, subs);
     }

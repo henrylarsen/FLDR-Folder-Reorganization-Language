@@ -1,0 +1,17 @@
+RESTRUCTURE ./DOWNLOADS
+
+CONDITION is_during_year(year): {FILE_YEAR} = {year}
+
+FOLDER "DOWNLOADS-SORTED"
+CONTAINS: {FILE_NAME} INCLUDES "cat"
+HAS SUBFOLDERS [
+	FOREACH course_name IN ["info300", "phil230"]
+               FOLDER {course_name}
+                    CONTAINS: {FILE_NAME} INCLUDES {course_name}
+	FOLDER "gpxes"
+		CONTAINS: {FILE_TYPE} IS "gpx" AND {FILE_DATE} >= 20080101
+	FOLDER "2024 photos"
+		CONTAINS: is_during_year(2024) AND ({FILE_TYPE} ONEOF ["jpeg", "png", "jpg"])
+	FOLDER "other"
+		CONTAINS: +OTHER
+	]

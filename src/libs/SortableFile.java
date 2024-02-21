@@ -37,7 +37,7 @@ public class SortableFile {
             this.date = formatDate(attr.lastModifiedTime());
             this.name = String.valueOf(this.path.getFileName());
             int extensionIndex = this.name.lastIndexOf(".");
-            this.type = this.name.substring(extensionIndex+1);
+            this.type = this.name.substring(extensionIndex + 1);
 
         } catch (IOException e) {
             System.out.println("Could not read attributes of file: " + this.path);
