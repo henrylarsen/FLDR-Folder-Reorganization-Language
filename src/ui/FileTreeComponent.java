@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Collection;
+import java.util.Collections;
+
 
 /**
  * Represents a file tree to display, using a list of files
@@ -23,6 +25,7 @@ import java.util.Collection;
 public class FileTreeComponent extends JTree {
 
     public FileTreeComponent() {
+        setPaths("", Collections.emptyList());
     }
 
     /**

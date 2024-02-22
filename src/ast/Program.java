@@ -27,6 +27,10 @@ public class Program extends Node{
         this.folders = folders;
     }
 
+    public String getTargetDirectory() {
+        return targetDirectory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,7 +81,7 @@ public class Program extends Node{
                 }
             }).collect(Collectors.toList());
         } catch (IOException e) {
-            throw new Error("Error walking directory " + directory);
+            throw new Error("Error walking directory " + directory + "; does it exist?", e);
         }
     }
 
