@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class SortableFile {
     private Path path;
     private String name;
-    private int size;
+    private long size;
     private String type;
     private long date;
     private ProgramScope scope;
@@ -33,7 +33,7 @@ public class SortableFile {
     private void setFileAttributes() {
         try {
             BasicFileAttributes attr = Files.readAttributes(this.path, BasicFileAttributes.class);
-            this.size = Math.toIntExact(Long.valueOf(attr.size())); // throws exception in case of overflow
+            this.size = Long.valueOf(attr.size());
             this.date = formatDate(attr.lastModifiedTime());
             this.name = String.valueOf(this.path.getFileName());
             int extensionIndex = this.name.lastIndexOf(".");
@@ -62,9 +62,4 @@ public class SortableFile {
         this.scope.setGlobalDefinition("FILE_DAY", new LongValue(this.date % 100));
     }
 
-    /* FileTime class already converts all values in toString method,
-        so naive implementation works robustly */
-    private LongValue stripDate(String date, int start, int end) {
-        return new LongValue(Long.parseLong(date.substring(start, end)));
-    }
 }

@@ -14,7 +14,7 @@ public class ScriptEditorComponent extends JScrollPane {
     private String userScript;
     private String exampleScript;
     private String studyScript;
-    private final String scriptPath = "Group9Project1/src/ui/documentation";
+    private final String scriptPath = "./src/ui/documentation";
 
     public ScriptEditorComponent() {
         setViewportView(textPanel);
