@@ -22,7 +22,7 @@ public class Program extends Node{
     private final List<AbstractFolder> folders;
 
     public Program(String targetDirectory, List<Macro> macros, List<AbstractFolder> folders) {
-        this.targetDirectory = targetDirectory;
+        this.targetDirectory = targetDirectory.replaceFirst("^~", System.getProperty("user.home"));
         this.macros = macros;
         this.folders = folders;
     }

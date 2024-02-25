@@ -29,7 +29,7 @@ public class SingleFolder extends AbstractFolder {
                 break;
             }
         }
-        if (relativePathName.isEmpty() && condition.evaluate(scope)) {
+        if (relativePathName.isEmpty() && condition != null && condition.evaluate(scope)) {
             relativePathName = name.getValue(scope).coerceToString();
         }
         return relativePathName;

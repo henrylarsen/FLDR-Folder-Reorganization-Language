@@ -183,7 +183,6 @@ public class ParseTreeToAST extends DSLParserBaseVisitor<Node> {
             String name = ctx.for_loop().TEXT().toString().trim();
             List<Operand> operands = ctx.for_loop().list().list_contents().input()
                     .stream().map(d -> (Operand) d.accept(this)).toList();
-            // TODO: If we want multiple folders to be definable in a single for loop need to adjust this
             List<AbstractFolder> subs = new ArrayList<>();
             if (ctx.for_loop().folder() != null) {
                 subs.add((AbstractFolder) ctx.for_loop().folder().accept(this));

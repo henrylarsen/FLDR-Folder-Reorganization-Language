@@ -90,9 +90,7 @@ public class TopToolbar extends Toolbar {
     private FileDialog createFileDialog(int selectMode) {
         JFrame topFrame = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
         FileDialog selectDialog = new FileDialog(topFrame, "Select a Script File", selectMode);
-
-        // TODO: actually agree on extension for script? FOL = File Organization Language
-        selectDialog.setFilenameFilter((dir, name) -> name.endsWith(".fol"));
+        selectDialog.setFilenameFilter((dir, name) -> name.endsWith(".fldr"));
         selectDialog.setVisible(true);
         return selectDialog;
     }

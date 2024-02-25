@@ -22,7 +22,7 @@ public class InfoDialog extends JDialog {
 
     private void loadMessage() {
         try {
-            infoMessage = Files.readString(Paths.get("Group9Project1/src/ui/documentation/info.html").toAbsolutePath());
+            infoMessage = Files.readString(Paths.get("./src/ui/documentation/info.html").toAbsolutePath());
         } catch (IOException ex) {
             infoMessage = "Documentation currently unavailable.";
         }
