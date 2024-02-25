@@ -13,7 +13,6 @@ public class ScriptEditorComponent extends JScrollPane {
     private boolean editMode;
     private String userScript;
     private String exampleScript;
-    private String studyScript;
     private final String scriptPath = "./src/ui/documentation";
 
     public ScriptEditorComponent() {
@@ -30,11 +29,6 @@ public class ScriptEditorComponent extends JScrollPane {
         } catch (IOException ex) {
             exampleScript = "Cannot load example script.";
         }
-        try {
-            studyScript = Files.readString(Paths.get(scriptPath + "/study.txt").toAbsolutePath());
-        } catch (IOException ex) {
-            studyScript = "Cannot load study script.";
-        }
     }
 
     public void setScript(String fullScript) {
@@ -46,10 +40,6 @@ public class ScriptEditorComponent extends JScrollPane {
             case EDIT:
                 setEditMode(true);
                 setScript(userScript);
-                break;
-            case STUDY:
-                setEditMode(false);
-                setScript(studyScript);
                 break;
             case EXAMPLE:
                 setEditMode(false);

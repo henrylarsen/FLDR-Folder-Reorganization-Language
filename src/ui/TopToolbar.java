@@ -14,7 +14,6 @@ public class TopToolbar extends Toolbar {
     private static final String SAVE_ACTION = "save";
     private static final String EDITOR = "editor";
     private static final String EXAMPLE = "example";
-    private static final String STUDY_TASK = "study task";
 
     private MainPanel panel;
 
@@ -29,8 +28,6 @@ public class TopToolbar extends Toolbar {
         add(createScriptButton("Script Editor", EDITOR));
         add(createButtonSpacer());
         add(createScriptButton("Example Syntax", EXAMPLE));
-        add(createButtonSpacer());
-        add(createScriptButton("Study Task", STUDY_TASK));
     }
 
     @Override
@@ -39,7 +36,6 @@ public class TopToolbar extends Toolbar {
         boolean save = e.getActionCommand().equals(SAVE_ACTION);
         boolean edit = e.getActionCommand().equals(EDITOR);
         boolean example = e.getActionCommand().equals(EXAMPLE);
-        boolean studyTask = e.getActionCommand().equals(STUDY_TASK);
         int selectMode = load ? FileDialog.LOAD : FileDialog.SAVE;
         File resultantFile = null;
         if (load || save ) {
@@ -59,8 +55,6 @@ public class TopToolbar extends Toolbar {
                 panel.setMode(EditorMode.EDIT);
             } else if (example) {
                 panel.setMode(EditorMode.EXAMPLE);
-            } else if (studyTask) {
-                panel.setMode(EditorMode.STUDY);
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog (
