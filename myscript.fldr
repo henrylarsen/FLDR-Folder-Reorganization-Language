@@ -1,0 +1,21 @@
+RESTRUCTURE ~/Documents/test/test_data
+
+CONDITION course_sort(course_name, year): {FILE_YEAR} = {year} AND {FILE_NAME} INCLUDES {course_name}
+
+
+FOLDER "sortedfiles"
+CONTAINS: +OTHER
+HAS SUBFOLDERS [
+	FOLDER "photos"
+	CONTAINS: {FILE_TYPE} ONEOF ["jpeg", "png", "jpg"]
+
+	FOLDER "ubc-folder"
+	HAS SUBFOLDERS [
+		FOLDER "clubs"
+		CONTAINS: {FILE_NAME} INCLUDES "club" AND {FILE_SIZE} < 50MB
+
+		FOREACH course IN ["info300", "phil230", "cpsc410"]
+		FOLDER {course}
+		CONTAINS: course_sort({course}, 2023)
+	]
+]
